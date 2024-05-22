@@ -36,13 +36,14 @@ export default function Index() {
         }
     };
 
+    
     useEffect(() => {
         (async () => {
             const price = await getTokenPrice(address || DEFAULT_ADDRESS as Address) as BigInt;
             const tokenSale = await getAllowance(address || DEFAULT_ADDRESS as Address) as BigInt;
             const sold = await getTokenSold(address || DEFAULT_ADDRESS as Address) as BigInt;
             const holder = await getTokenHolders();
-
+            
             setTokenPrice(price)
             setAllowance(tokenSale)
             setTokenSold(sold)
@@ -50,8 +51,8 @@ export default function Index() {
             setRefetch(false)
         })()
     }, [address, refetch])
-
-
+    
+    
     useEffect(() => {
         (async () => {
             const aha = await formattedBalance(address || DEFAULT_ADDRESS as Address, AHA_SYMBOL);
