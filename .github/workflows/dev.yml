@@ -1,0 +1,31 @@
+name: Vercel Preview Deployment
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  VITE_WEB3MODAL_PROJECT_ID: 730e236a3c33cccba319198558af5822
+  VITE_BSC_API_URL: https://api-testnet.bscscan.com
+  VITE_BSC_API_KEY: HBP7IIIAWAW1WE7G7AWXYDC7BK3854Y2C2
+  VITE_AHA_CONTRACT: 0xC14c4e99c471cb3e774434E48Ee1830C5A1778B0
+  VITE_USDT_CONTRACT: 0x48e04137Fafce43E2A97d8d9d61A386175d5B869
+  VITE_ICO_CONTRACT: 0xfFe752d012B68a65e3a77DCC65a5670da0eeEAdE
+  VITE_CHAIN_EXPLORER: https://testnet.bscscan.com
+  VITE_CHAIN_NETWORK: bscTestnet
+  VITE_DEFAULT_ADDRESS: 0x9Be4c638CDC4b7d89b8Ea3720cd1f39E32276E53
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Deploy-Preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }} 
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
