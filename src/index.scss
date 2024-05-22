@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css?family=Droid+Sans+Mono");
+/* html {
+  scroll-behavior: smooth;
+} */
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+@layer components {
+  .btn {
+    @apply bg-aha-green-light hover:bg-aha-green-lighter text-white font-semibold shadow
+  }
+
+  .flip-timer-card-container {
+    @apply col-span-1 relative h-14 sm:h-20 bg-aha-green-dark rounded-md shadow-md shadow-gray-400
+  }
+
+  .flip-timer-card-flipper {
+    @apply flex justify-center absolute left-0 w-full px-1 h-1/2 overflow-hidden
+  }
+
+  .flip-timer-card {
+    @apply flex justify-center relative w-full px-1 h-1/2 overflow-hidden border border-gray-50
+  }
+
+  .flip-card-top {
+    @apply items-end
+  }
+
+  .flip-timer-card-text {
+    @apply font-bold text-white text-4xl sm:text-7xl
+  }
+
+  .flip-card-bottom {
+    @apply items-start
+  }
+
+  .flip-timer-fold {
+    @apply animate-fold-card origin-bottom top-0 items-end rotate-0 bg-aha-green-dark border border-gray-50
+  }
+
+  .flip-timer-unfold {
+    @apply animate-unfold-card origin-top top-1/2 items-start rotate-180 bg-aha-green-dark border border-gray-50
+  }
+}
