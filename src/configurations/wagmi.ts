@@ -1,6 +1,7 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { http } from '@wagmi/core';
 import { getChainNetwork } from "./chains";
+import { Chain } from "viem";
 
 interface Metadata {
   name: string;
@@ -20,7 +21,7 @@ const projectId = import.meta.env.VITE_WEB3MODAL_PROJECT_ID as string;
 const chain = getChainNetwork();
 
 export const config = defaultWagmiConfig({
-  chains: [chain],
+  chains: [chain] as [Chain],
   projectId,
   metadata,
   transports: {
