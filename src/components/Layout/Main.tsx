@@ -1,4 +1,4 @@
-import React, { useState, useEffect, MouseEvent } from "react";
+import React, { MouseEvent } from "react";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 
 import { useAccount } from "wagmi";
@@ -12,7 +12,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     const { open } = useWeb3Modal();
-    const { address, isDisconnected } = useAccount();
+    const { address } = useAccount();
 
     const handleConnect = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {
         e.preventDefault();

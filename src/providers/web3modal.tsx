@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

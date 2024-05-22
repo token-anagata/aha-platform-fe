@@ -20,8 +20,8 @@ export default function Index() {
     const { open } = useWeb3Modal();
     const { address, isConnected } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false)
-    const [ahaBalance, setAhaBalance] = useState<Number>(0)
-    const [usdtBalance, setUsdtBalance] = useState<Number>(0)
+    const [ahaBalance, setAhaBalance] = useState<number>(0)
+    const [usdtBalance, setUsdtBalance] = useState<number>(0)
     const [tokenHolders, setTokenHolders] = useState<number>(0)
     const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0))
     const [tokenSold, setTokenSold] = useState<BigInt>(BigInt(0))
@@ -75,7 +75,6 @@ export default function Index() {
                     />
                     <Divider />
                     <IcoInfo
-                        address={address}
                         allowance={allowance}
                         tokenSold={tokenSold}
                         tokenHolders={tokenHolders}

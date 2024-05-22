@@ -3,13 +3,12 @@ import { formatNumber } from "@/utils/number";
 import { DECIMALS } from "@/utils/wagmi";
 
 interface IcoInfoProps {
-    address: string | undefined;
     allowance: BigInt;
     tokenSold: BigInt;
     tokenHolders: number;
 }
 
-const IcoInfo: React.FC<IcoInfoProps> = ({ address, allowance, tokenSold, tokenHolders}) => {
+const IcoInfo: React.FC<IcoInfoProps> = ({ allowance, tokenSold, tokenHolders}) => {
     return (
         <div className="grid grid-cols-2 text-xl">
             <div>

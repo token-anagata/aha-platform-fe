@@ -3,8 +3,8 @@ import UsdtIcon from "@/assets/svg/UsdtIcon";
 import { formatNumber } from "@/utils/number";
 
 interface IcoBalanceProps {
-    usdt: Number;
-    aha: Number;
+    usdt: number;
+    aha: number;
 }
 
 const IcoBalance: React.FC<IcoBalanceProps> = ({ usdt, aha }) => {
