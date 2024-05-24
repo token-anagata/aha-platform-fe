@@ -191,9 +191,21 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, setRefetch, handleConnec
                     onClick={address ? handleBuyToken : handleConnect}
                 >
                     {
-                        loadingButton ? (<SpinIcon addClassName="" />) : (address ? "Buy Token" : "Connect")
+                        loadingButton ? (
+                            <SpinIcon
+                                addClassName={classNames({
+                                    'w-8 h-8': true,
+                                    'animate-spin': loadingButton
+                                })}
+                            />
+                        )
+                            : (address ? "Buy Token" : "Connect")
                     }
                 </button>
+            </div>
+
+            <div className="flex justify-center">
+                <p className="font-normal text-sm"> 1 AHA ~ {formattedTokenPrice} USDT</p>
             </div>
 
             {loadingTransaction && (<div className="relative">
