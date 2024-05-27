@@ -3,13 +3,13 @@ import ArrowDownIcon from "@/assets/svg/ArrowDownIcon";
 import SpinIcon from "@/assets/svg/SpinIcon";
 import UsdtIcon from "@/assets/svg/UsdtIcon";
 import { formatInputNumber, formatNumber } from "@/utils/number";
-import { DECIMALS } from "@/utils/wagmi";
+import { DECIMALS, decodeLog } from "@/utils/wagmi";
 import { buyTokens } from "@/utils/wagmi/ico/writeContract";
 import { approve } from "@/utils/wagmi/usdt/writeContract";
 import classNames from "classnames";
 import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Address, Hash } from "viem";
+import { Address, Hash, decodeEventLog } from "viem";
 import { useWaitForTransactionReceipt } from "wagmi";
 
 interface IcoProps {
@@ -19,35 +19,59 @@ interface IcoProps {
     handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
 
+type HashTransaction = {
+    hash: Hash | undefined;
+    mode: 'approve' | 'buy' | undefined;
+}
+
 const Ico: React.FC<IcoProps> = ({ address, tokenPrice, setRefetch, handleConnect }) => {
     const [usdt, setUsdt] = useState<string>('')
     const [aha, setAha] = useState<string>('')
     const [formattedTokenPrice, setformattedTokenPrice] = useState<string>('0')
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
-    const [hashBuyToken, setHashBuyToken] = useState<Hash | undefined>(undefined)
-    const { isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-        hash: hashBuyToken,
+    const [hashTransaction, setHashTransaction] = useState<HashTransaction>({ hash: undefined, mode: undefined })
+    const { data: dataTransaction, isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+        hash: hashTransaction.hash,
     });
 
     useEffect(() => {
         (async () => {
-            if (isConfirmed) {
-                try {
-                    const amountToBuy = Number(usdt)
-                    // Ask to permitted for move their funds to contract address
-                    const result = await buyTokens(address as Address, amountToBuy)
+            if (!isConfirmed) return 
+            
+            if (hashTransaction.mode === 'buy') {
+                // update list 
+                setHashTransaction(prevState => ({
+                    ...prevState,
+                    hash: undefined,
+                    mode: undefined
+                }))
+                setRefetch(true)
+                setLoadingButton(false)
 
-                    if (result) {
-                        // update list 
-                        setRefetch(true)
-                        setLoadingButton(false)
+                toast.success('Your have been successfully buy AHA token')
 
-                        toast.success('Your funds have been successfully staked')
-                    }
-                } catch (e) {
-                    console.log(e)
-                    setLoadingButton(false)
+                return
+            }
+
+            
+            try {
+                const topics = decodeLog(dataTransaction.logs)
+                const amountToBuy = Number(usdt)
+                // Ask to permitted for move their funds to contract address
+                const result = await buyTokens(address as Address, amountToBuy)
+                
+                console.log(topics)
+                if (result) {
+                    // update mode 
+                    setHashTransaction(prevState => ({
+                        ...prevState,
+                        hash: result,
+                        mode: 'buy'
+                    }))
                 }
+            } catch (e) {
+                console.log(e)
+                setLoadingButton(false)
             }
         })()
     }, [isConfirmed])
@@ -71,12 +95,16 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, setRefetch, handleConnec
 
             if (hashApprove) {
                 toast.success('Approve was successfull')
-                setHashBuyToken(hashApprove as Hash)
+                setHashTransaction(prevState => ({
+                    ...prevState,
+                    hash: hashApprove as Hash,
+                    mode: 'approve'
+                }))
             }
         } catch (e) {
             console.log('buy tokens', e)
             setLoadingButton(false)
-            toast.error("There was an error durring stake, try again in moment")
+            toast.error("There was an error durring buy token, try again in moment")
         }
 
     };

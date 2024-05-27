@@ -5,8 +5,9 @@ import {
 } from '@wagmi/core'
 import { getContractAddress } from '../contract';
 import { Address } from 'viem/accounts';
-import { Hash } from 'viem';
+import { Hash, Log, parseEventLogs } from 'viem';
 import { getChainNetwork } from '@/configurations/chains';
+import { ABI_USDT_CONTRACT } from '@/abi/usdt';
 
 /* global BigInt */
 export const CURRENT_EVENT = process.env.REACT_APP_EVENTID
@@ -15,9 +16,9 @@ export const REAL_DECIMALS = 18
 export const SUCCESS_STATUS = "success"
 
 
-export async function walletBalance(address: Address, type: string ) {
-    const contract : Address =  getContractAddress(type)
-    
+export async function walletBalance(address: Address, type: string) {
+    const contract: Address = getContractAddress(type)
+
     const balance = await getBalance(config, {
         address: address as Address,
         token: contract
@@ -26,9 +27,9 @@ export async function walletBalance(address: Address, type: string ) {
     return balance
 }
 
-export async function formattedBalance(address: Address, type: string ) {
-    const contract : Address =  getContractAddress(type)
-    
+export async function formattedBalance(address: Address, type: string) {
+    const contract: Address = getContractAddress(type)
+
     const balance = await getBalance(config, {
         address: address as Address,
         token: contract
@@ -40,9 +41,19 @@ export async function formattedBalance(address: Address, type: string ) {
 export async function getTransactionConfirmed(hash: Hash) {
     const chain = getChainNetwork()
     const transaction = await waitForTransactionReceipt(config, {
-        chainId: chain.id, 
+        chainId: chain.id,
         hash: hash
     })
 
     return transaction
+}
+
+
+export function decodeLog(receiptLogs: Log[]) {
+    const logs = parseEventLogs({
+        abi: ABI_USDT_CONTRACT,
+        logs: receiptLogs,
+    })
+
+    return logs
 }
