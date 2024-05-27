@@ -9,7 +9,7 @@ import { approve } from "@/utils/wagmi/usdt/writeContract";
 import classNames from "classnames";
 import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Address, Hash, decodeEventLog } from "viem";
+import { Address, Hash } from "viem";
 import { useWaitForTransactionReceipt } from "wagmi";
 
 interface IcoProps {
