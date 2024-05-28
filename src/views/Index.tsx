@@ -66,7 +66,7 @@ export default function Index() {
     return (
         <Layout>
             <div className="flex justify-center">
-                <section className="w-2/4 px-4 sm:px-10 py-10 space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+                <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
                     <IcoBalance usdt={usdtBalance} aha={ahaBalance} />
                     <Ico
                         address={address}
