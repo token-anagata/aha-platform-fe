@@ -2,7 +2,8 @@ import AhaIcon from "@/assets/svg/AhaIcon";
 import ArrowDownIcon from "@/assets/svg/ArrowDownIcon";
 import SpinIcon from "@/assets/svg/SpinIcon";
 import UsdtIcon from "@/assets/svg/UsdtIcon";
-import { formatInputNumber, formatNumber } from "@/utils/number";
+import { RangePrice } from "@/types/token";
+import { formatInputNumber, formatNumber, formatToken } from "@/utils/number";
 import { DECIMALS, decodeLog } from "@/utils/wagmi";
 import { buyTokens } from "@/utils/wagmi/ico/writeContract";
 import { approve } from "@/utils/wagmi/usdt/writeContract";
@@ -14,6 +15,7 @@ import { useWaitForTransactionReceipt } from "wagmi";
 
 interface IcoProps {
     tokenPrice: BigInt;
+    rangePrice: RangePrice;
     address: string | undefined;
     setRefetch: Dispatch<SetStateAction<boolean>>;
     handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
@@ -24,7 +26,7 @@ type HashTransaction = {
     mode: 'approve' | 'buy' | undefined;
 }
 
-const Ico: React.FC<IcoProps> = ({ address, tokenPrice, setRefetch, handleConnect }) => {
+const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch, handleConnect }) => {
     const [usdt, setUsdt] = useState<string>('')
     const [aha, setAha] = useState<string>('')
     const [formattedTokenPrice, setformattedTokenPrice] = useState<string>('0')
@@ -85,7 +87,15 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, setRefetch, handleConnec
     const handleBuyToken = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
 
-        const amountToBuy = Number(usdt)
+        const amountToBuy = Number(usdt.replace(/,/g, ''))
+        const min = formatToken(rangePrice.min)
+        const max = formatToken(rangePrice.max) 
+        
+        if(amountToBuy < min || amountToBuy > max){
+            toast.warning(`Amount is not in range token price. Minimum ${min} USDT & Maximum ${max} USDT `)
+
+            return 
+        }  
 
         try {
             // loading button

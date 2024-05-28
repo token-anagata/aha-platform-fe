@@ -30,3 +30,8 @@ export interface TokenHolderList{
     TokenHolderAddress: string;
     TokenHolderQuantity: string;
 }
+
+export interface RangePrice {
+    min: BigInt;
+    max: BigInt;
+}

@@ -6,14 +6,16 @@ import Layout from "@/components/Layout/Main";
 import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { AHA_SYMBOL, USDT_SYMBOL } from "@/configurations/contract";
 import { OpenParams } from "@/types/account";
+import { RangePrice } from "@/types/token";
 import { getTokenHolders } from "@/utils/bsc";
 import { formattedBalance } from "@/utils/wagmi";
 import { getAllowance } from "@/utils/wagmi/aha/readContract";
-import { getTokenPrice, getTokenSold } from "@/utils/wagmi/ico/readContract";
+import { getMaxAmount, getMinAmount, getTokenPrice, getTokenSold } from "@/utils/wagmi/ico/readContract";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { MouseEvent, useEffect, useState } from "react";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
+
 
 
 export default function Index() {
@@ -25,6 +27,7 @@ export default function Index() {
     const [tokenHolders, setTokenHolders] = useState<number>(0)
     const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0))
     const [tokenSold, setTokenSold] = useState<BigInt>(BigInt(0))
+    const [rangePrice, setRangePrice] = useState<RangePrice>({min: BigInt(0), max: BigInt(0)})
     const [allowance, setAllowance] = useState<BigInt>(BigInt(0))
 
     const handleConnect = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {
@@ -40,11 +43,14 @@ export default function Index() {
     useEffect(() => {
         (async () => {
             const price = await getTokenPrice(address || DEFAULT_ADDRESS as Address) as BigInt;
+            const min = await getMinAmount(address || DEFAULT_ADDRESS as Address) as BigInt;
+            const max = await getMaxAmount(address || DEFAULT_ADDRESS as Address) as BigInt;
             const tokenSale = await getAllowance(address || DEFAULT_ADDRESS as Address) as BigInt;
             const sold = await getTokenSold(address || DEFAULT_ADDRESS as Address) as BigInt;
             const holder = await getTokenHolders();
             
             setTokenPrice(price)
+            setRangePrice({min, max})
             setAllowance(tokenSale)
             setTokenSold(sold)
             setTokenHolders(holder)
@@ -71,6 +77,7 @@ export default function Index() {
                     <Ico
                         address={address}
                         tokenPrice={tokenPrice}
+                        rangePrice={rangePrice}
                         handleConnect={handleConnect}
                         setRefetch={setRefetch}
                     />
