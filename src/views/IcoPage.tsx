@@ -5,7 +5,6 @@ import Ico from "@/components/Form/Ico";
 import Layout from "@/components/Layout/Main";
 import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { AHA_SYMBOL, USDT_SYMBOL } from "@/configurations/contract";
-import { useFetchAuth } from "@/hooks/useAuth";
 import { OpenParams } from "@/types/account";
 import { RangePrice } from "@/types/token";
 import { getTokenHolders } from "@/utils/bsc";
@@ -20,7 +19,6 @@ import { useAccount } from "wagmi";
 const IcoPage: React.FC = () => {
     const { open } = useWeb3Modal();
     const { address, isConnected } = useAccount();
-    const { data } = useFetchAuth()
     const [refetch, setRefetch] = useState<boolean>(false)
     const [ahaBalance, setAhaBalance] = useState<number>(0)
     const [usdtBalance, setUsdtBalance] = useState<number>(0)
@@ -38,8 +36,6 @@ const IcoPage: React.FC = () => {
             open({ view: "Connect" } as OpenParams);
         }
     };
-
-    console.log(data)
 
     useEffect(() => {
         (async () => {

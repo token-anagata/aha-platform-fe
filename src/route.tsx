@@ -9,7 +9,7 @@ const routes: RouteObject[] = [
       element: <IcoPage />,
     },
     {
-      path: '/app-auth',
+      path: '/auth',
       element: <GrabPage />,
     },
     {

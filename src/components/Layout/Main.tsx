@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import Header from "./Header";
 import { OpenParams } from "@/types/account";
 import classNames from "classnames";
+import { useFetchAuth } from "@/hooks/useAuth";
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -14,6 +15,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, type }) => {
     const { open } = useWeb3Modal();
     const { address } = useAccount();
+    const { data } = useFetchAuth();
 
     const handleConnect = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {
         e.preventDefault();
@@ -23,6 +25,8 @@ const Layout: React.FC<LayoutProps> = ({ children, type }) => {
             open({ view: "Connect" } as OpenParams);
         }
     };
+
+    console.log(data)
 
     return (
         <div className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">

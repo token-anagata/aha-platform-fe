@@ -1,7 +1,7 @@
+import { WEBBASE_URL } from '@/configurations/common';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-const URL: string = import.meta.env.VITE_AHA_WEBURL
-axios.defaults.baseURL = URL;
+axios.defaults.baseURL = WEBBASE_URL;
 
 axios.interceptors.request.use((config) => {
     const token = localStorage.getItem('_X_AUTH_')
@@ -16,7 +16,7 @@ axios.interceptors.response.use(
     (res) => res,
     (error: AxiosError) => {
         const { data, status } = error.response!;
-        console.log(status)
+        
         switch (status) {
             case 400:
                 console.error(data);
@@ -24,6 +24,7 @@ axios.interceptors.response.use(
 
             case 401:
                 console.error('Unauthenticated');
+                //window.location.replace(WEBBASE_URL)
                 break;
 
             case 404:
