@@ -1,5 +1,6 @@
 import LightSunIcon from "@/assets/svg/LightSunIcon";
 import NightMoonIcon from "@/assets/svg/NightMoonIcon";
+import WalletIcon from "@/assets/svg/WalletIcon";
 import { useDarkMode } from "@/context/DarkModeContext";
 import { MouseEvent } from "react";
 
@@ -29,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ handleConnect, address }) => {
                 <button className="border-2 border-aha-green-dark dark:border-aha-green-lighter px-2 sm:py-1 rounded-xl text-sm" onClick={handleConnect} >
                     <span className="flex items-center space-x-2">
                         <span>{address ? `${address.slice(0, 6)}........${address.slice(address.length - 4, address.length)}`.toLowerCase() : 'Connect to wallet'}</span>
-                        <i className="fas fa-wallet"></i>
+                        <WalletIcon addClassName="w-5 h-5" />
                     </span>
                 </button>
             </nav>
