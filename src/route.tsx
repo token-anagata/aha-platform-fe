@@ -3,7 +3,7 @@ import IcoPage from "./views/IcoPage";
 import StakePage from "./views/StakePage";
 import DonationPage from "./views/DonationPage";
 import { WEBBASE_URL } from "./configurations/common";
-import { fetchAuthData } from "./hooks/useAuth";
+//import { fetchAuthData } from "./hooks/useAuth";
 
 const grabTokenLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -18,16 +18,16 @@ const grabTokenLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs) 
   return false
 }
 
-const verifyAuthloader: LoaderFunction = async () => {
-  const res = await fetchAuthData()
-  console.log(res)
-  if (res) {
-    return true;
-  }
+// const verifyAuthloader: LoaderFunction = async () => {
+//   const res = await fetchAuthData()
+//   console.log(res)
+//   if (res) {
+//     return true;
+//   }
 
-  //window.location.replace(WEBBASE_URL) 
-  return true
-}
+//   //window.location.replace(WEBBASE_URL) 
+//   return true
+// }
 
 const routes: RouteObject[] = [
     {

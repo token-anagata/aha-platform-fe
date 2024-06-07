@@ -1,5 +1,5 @@
-import { formatInputNumber, formatToken } from "@/utils/number";
-import { DECIMALS, decodeLog } from "@/utils/wagmi";
+import { formatInputNumber } from "@/utils/number";
+import { decodeLog } from "@/utils/wagmi";
 import { buyTokens } from "@/utils/wagmi/ico/writeContract";
 import classNames from "classnames";
 import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
@@ -24,7 +24,6 @@ type HashTransaction = {
 const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect }) => {
     const [donation, setDonation] = useState<string>('')
     const [chain, setChain] = useState<ChainOpts>(CHAIN_OPTS[0])
-    const [formattedTokenPrice, setformattedTokenPrice] = useState<string>('0')
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
     const [hashTransaction, setHashTransaction] = useState<HashTransaction>({ hash: undefined, mode: undefined })
     const { data: dataTransaction, isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
@@ -76,7 +75,7 @@ const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect 
     const handleDonation = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
 
-        const donate = Number(donation.replace(/,/g, ''))
+        //const donate = Number(donation.replace(/,/g, ''))
 
         try {
             // loading button
@@ -143,8 +142,8 @@ const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect 
                 <input
                     className="appearance-none border py-4 pl-4 text-xl bg-gray-100 dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 placeholder:dark:text-gray-200 focus:placeholder-gray-600 transition rounded-sm w-full outline-none"
                     type="text"
-                    placeholder={formattedTokenPrice}
                     value={donation}
+                    placeholder="0"
                     onChange={handleChangeDonation}
                     onKeyDown={handleKeyDownAmount}
                 />

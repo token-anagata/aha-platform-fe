@@ -71,7 +71,7 @@ const ChainSelectBox: React.FC<ChainSelectBoxProps> = ({ onChange }) => {
                     }
                     value={chain}
                   >
-                    {({ selected, focus }) => (
+                    {({ selected }) => (
                       <>
                         <div className="flex items-center">
                           {chain.icon}

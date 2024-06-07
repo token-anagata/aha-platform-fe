@@ -9,6 +9,7 @@ interface IcoInfoProps {
 }
 
 const IcoInfo: React.FC<IcoInfoProps> = ({ allowance, tokenSold, tokenHolders}) => {
+    console.log(tokenHolders)
     return (
         <div className="grid grid-cols-2 text-xl">
             <div>

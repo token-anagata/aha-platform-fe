@@ -8,7 +8,7 @@ import { useAccount } from "wagmi";
 
 const DonationPage: React.FC = () => {
     const { open } = useWeb3Modal();
-    const { address, isConnected } = useAccount();
+    const { address } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false)
 
     const handleConnect = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {

@@ -4,7 +4,7 @@ import SVGEelement from "@/types/svg"
 
 const BnbIcon : React.FC<SVGEelement> = ({ addClassName }) => {
     return (
-        <svg className={addClassName} version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 2496 2496" width={30} height={30} style={{ enableBackground: "new 0 0 2496 2496" }}>
+        <svg className={addClassName} version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 2496 2496" width={30} height={30}>
             <g>
                 <path style={{ fillRule: "evenodd", clipRule: "evenodd", fill: "#F0B90B" }} d="M1248,0c689.3,0,1248,558.7,1248,1248s-558.7,1248-1248,1248
             S0,1937.3,0,1248S558.7,0,1248,0L1248,0z" />
