@@ -3,18 +3,20 @@ import IcoPage from "./views/IcoPage";
 import StakePage from "./views/StakePage";
 import DonationPage from "./views/DonationPage";
 import { WEBBASE_URL } from "./configurations/common";
+import ErrorPage from "./views/error/ErrorPage";
+import NotFound from "./views/error/NotFound";
 //import { fetchAuthData } from "./hooks/useAuth";
 
 const grabTokenLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const token = url.searchParams.get("token");
-  if(token){
+  if (token) {
     localStorage.setItem('_X_AUTH_', token as string)
 
     return redirect('/')
   }
 
-  window.location.replace(WEBBASE_URL) 
+  window.location.replace(WEBBASE_URL)
   return false
 }
 
@@ -30,27 +32,32 @@ const grabTokenLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs) 
 // }
 
 const routes: RouteObject[] = [
-    {
-      path: '/',
-      //loader: verifyAuthloader,
-      element: <IcoPage />,
-    },
-    {
-      path: '/auth',
-      loader: grabTokenLoader
-    },
-    {
-      path: '/stake',
-      //loader: verifyAuthloader,
-      element: <StakePage />,
-    },
-    {
-      path: '/donation/:id',
-      //loader: verifyAuthloader,
-      element: <DonationPage />,
-    },
-  ];
-  
-  const router = createBrowserRouter(routes);
-  
-  export default router;
+  {
+    path: '/',
+    //loader: verifyAuthloader,
+    element: <IcoPage />,
+  },
+  {
+    path: '/auth',
+    loader: grabTokenLoader
+  },
+  {
+    path: '/stake',
+    //loader: verifyAuthloader,
+    element: <StakePage />,
+  },
+  {
+    path: '/donation/:id',
+    //loader: verifyAuthloader,
+    element: <DonationPage />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: '*', 
+    element: <NotFound />,
+  },
+];
+
+const router = createBrowserRouter(routes);
+
+export default router;
