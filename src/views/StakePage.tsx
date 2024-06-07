@@ -11,9 +11,8 @@ import { useAccount } from "wagmi";
 const StakePage: React.FC = () => {
     const [listStake, setListStake] = useState<any[]>([]);
     const [loadingList, setLoadingList] = useState<boolean>(true);
-  
     const { address, isConnected, isDisconnected } = useAccount();
-  
+    
     useEffect(() => {
       const fetchData = async () => {
         const list = await getListStakeByAddress(address as Address);

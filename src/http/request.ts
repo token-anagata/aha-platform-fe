@@ -5,7 +5,7 @@ axios.defaults.baseURL = WEBBASE_URL;
 
 axios.interceptors.request.use((config) => {
     const token = localStorage.getItem('_X_AUTH_')
-    console.log(config.url?.includes("http"))
+    
     if (token && !config.url?.includes("http")) {
         config.headers.Authorization = `Bearer ${token}`;
     }

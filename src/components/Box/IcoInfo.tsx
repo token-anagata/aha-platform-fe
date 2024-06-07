@@ -23,12 +23,12 @@ const IcoInfo: React.FC<IcoInfoProps> = ({ allowance, tokenSold, tokenHolders}) 
             <div>
                 <p className="font-bold text-right"> {formatNumber(Number(tokenSold) / Number(DECIMALS), 0, 2)} AHA</p>
             </div>
-            <div>
+            {/* <div>
                 <p className="font-medium">Tokens Holder</p>
             </div>
             <div>
                 <p className="font-bold text-right"> {formatNumber(tokenHolders, 0, 0)} Address</p>
-            </div>
+            </div> */}
         </div>
     )
 }

@@ -26,3 +26,10 @@ export function getPublicRpc() : string{
         return 'https://endpoints.omniatech.io/v1/bsc/testnet/public'
     }
 }
+
+export const CHAINS =  [
+    'eth',
+    'bnb',
+    'usdt',
+    'aha'
+]

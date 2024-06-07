@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^2.0.4",
     "@tanstack/react-query": "^5.36.0",
     "@web3modal/wagmi": "^4.2.0",
     "axios": "^1.7.1",
