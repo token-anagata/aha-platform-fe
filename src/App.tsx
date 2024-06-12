@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { RouterProvider } from "react-router-dom";
 import router from "./route";
 import { AccountStakedProvider } from "./context/AccountStakedContext";
+import { StoreProvider } from "./context/StoreContext";
 
 function App() {
 
@@ -13,8 +14,10 @@ function App() {
     <Web3ModalProvider>
       <AccountStakedProvider>
         <DarkModeProvider>
-          <ToastContainer position="bottom-left" theme="colored" />
-          <RouterProvider router={router} />
+          <StoreProvider>
+            <ToastContainer position="bottom-left" theme="colored" />
+            <RouterProvider router={router} />
+          </StoreProvider>
         </DarkModeProvider>
       </AccountStakedProvider>
     </Web3ModalProvider>

@@ -6,26 +6,43 @@ import UsdtIcon from '@/assets/svg/UsdtIcon'
 import AhaIcon from '@/assets/svg/AhaIcon'
 import classNames from 'classnames'
 import { ChainOpts } from '@/types/chain'
+import { getBscChainNetwork, getEthChainNetwork } from '@/configurations/chains'
+import { BNB_RECEPIENT, ETH_RECEPIENT } from '@/configurations/common'
+
+const bscChain = getBscChainNetwork()
+const ethChain = getEthChainNetwork()
 
 export const CHAIN_OPTS: ChainOpts[] = [
   {
+    id: bscChain.id,
     name: 'Anagata Token',
     value: 'aha',
+    recipient: BNB_RECEPIENT,
+    explorer: bscChain.blockExplorers?.default.url,
     icon: <AhaIcon addClassName='' />
   },
   {
+    id: bscChain.id,
     name: 'USD Tether',
     value: 'usdt',
+    recipient: BNB_RECEPIENT,
+    explorer: bscChain.blockExplorers?.default.url,
     icon: <UsdtIcon addClassName='' />
   },
   {
+    id: ethChain.id,
     name: 'Ethereum',
     value: "eth",
+    recipient: ETH_RECEPIENT,
+    explorer: ethChain.blockExplorers?.default.url,
     icon: <EthIcon addClassName='' />
   },
   {
+    id: bscChain.id,
     name: 'Binance Coin',
     value: 'bnb',
+    recipient: BNB_RECEPIENT,
+    explorer: bscChain.blockExplorers?.default.url,
     icon: <BnbIcon addClassName='' />
   },
 ]
@@ -64,7 +81,7 @@ const ChainSelectBox: React.FC<ChainSelectBoxProps> = ({ onChange }) => {
                     key={chain.value}
                     className={({ focus }) =>
                       classNames(
-                        focus ? 'bg-indigo-600 text-black dark:text-white' : '',
+                        focus ? 'bg-aha-green-light text-black dark:text-white' : '',
                         !focus ? 'text-black dark:text-white' : '',
                         'relative cursor-default select-none py-2 pl-3 pr-9'
                       )

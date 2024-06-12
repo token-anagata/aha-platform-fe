@@ -62,7 +62,7 @@ const MainStake: React.FC<MainStakeProps> = ({ address, loadingList, setLoadingL
     } catch (e) {
       console.log("unstake", e);
       setLoadingButton(false);
-      toast.error("There was an error during unstake, try again in moment");
+      toast.error("There is no cycle number that can be claimed because it has not passed the stake period");
     }
   };
 

@@ -5,11 +5,11 @@ import { DECIMALS } from "@/utils/wagmi";
 interface IcoInfoProps {
     allowance: BigInt;
     tokenSold: BigInt;
-    tokenHolders: number;
+    //tokenHolders: number;
 }
 
-const IcoInfo: React.FC<IcoInfoProps> = ({ allowance, tokenSold, tokenHolders}) => {
-    console.log(tokenHolders)
+const IcoInfo: React.FC<IcoInfoProps> = ({ allowance, tokenSold}) => {
+
     return (
         <div className="grid grid-cols-2 text-xl">
             <div>

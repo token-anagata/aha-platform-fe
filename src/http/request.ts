@@ -24,7 +24,7 @@ axios.interceptors.response.use(
 
             case 401:
                 console.error('Unauthenticated');
-                //window.location.replace(WEBBASE_URL)
+                window.location.replace(WEBBASE_URL)
                 break;
 
             case 404:

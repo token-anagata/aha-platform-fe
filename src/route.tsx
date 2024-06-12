@@ -5,7 +5,7 @@ import DonationPage from "./views/DonationPage";
 import { WEBBASE_URL } from "./configurations/common";
 import ErrorPage from "./views/error/ErrorPage";
 import NotFound from "./views/error/NotFound";
-//import { fetchAuthData } from "./hooks/useAuth";
+import { fetchAuthData } from "./hooks/useAuth";
 
 const grabTokenLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -20,21 +20,21 @@ const grabTokenLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs) 
   return false
 }
 
-// const verifyAuthloader: LoaderFunction = async () => {
-//   const res = await fetchAuthData()
-//   console.log(res)
-//   if (res) {
-//     return true;
-//   }
+const verifyAuthloader: LoaderFunction = async () => {
+  const res = await fetchAuthData()
+  console.log(res)
+  if (res) {
+    return true;
+  }
 
-//   //window.location.replace(WEBBASE_URL) 
-//   return true
-// }
+  //window.location.replace(WEBBASE_URL) 
+  return true
+}
 
 const routes: RouteObject[] = [
   {
     path: '/',
-    //loader: verifyAuthloader,
+    loader: verifyAuthloader,
     element: <IcoPage />,
   },
   {
@@ -43,12 +43,12 @@ const routes: RouteObject[] = [
   },
   {
     path: '/stake',
-    //loader: verifyAuthloader,
+    loader: verifyAuthloader,
     element: <StakePage />,
   },
   {
     path: '/donation/:id',
-    //loader: verifyAuthloader,
+    loader: verifyAuthloader,
     element: <DonationPage />,
     errorElement: <ErrorPage />
   },

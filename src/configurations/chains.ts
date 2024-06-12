@@ -1,26 +1,58 @@
-import { Chain, bsc, bscTestnet, hardhat } from "wagmi/chains";
+import { Transport, http } from "viem";
+import { Chain, bsc, bscTestnet, hardhat, mainnet, sepolia } from "wagmi/chains";
 
-const CHAIN : string = import.meta.env.VITE_CHAIN_NETWORK
+export const ENV_NETWORK : string = import.meta.env.VITE_ENV_NETWORK
+
 export const FROM_BLOCKNUMBER = import.meta.env.VITE_FROM_BLOCKNUMBER
 
-export function getChainNetwork() : Chain{
-    switch (CHAIN) {
-        case 'hardhat':
-            return hardhat;
+export function getNetworkEnviroment() : Chain[]{
+    if(ENV_NETWORK === 'testnet'){
+        return [bscTestnet, sepolia]
+    }else if(ENV_NETWORK === 'mainnet'){
+        return [bsc, mainnet]
+    }else{
+        return [hardhat]
+    }
+}
 
-        case 'bsc':
-            return bsc
-    
-        default:
-            return bscTestnet
-          
+export function getTransportChain(): Record<Chain['id'], Transport>{
+    if(ENV_NETWORK === 'testnet'){
+        return {
+            [bscTestnet.id]: http(),
+            [sepolia.id]: http()
+        }
+    }else if(ENV_NETWORK === 'mainnet'){
+        return {
+            [bsc.id]: http(),
+            [mainnet.id]: http()
+        }
+    }else{
+        return {
+            [hardhat.id]: http(),
+        }
+    }
+}
+
+export function getBscChainNetwork(): Chain {
+    if(ENV_NETWORK === 'mainnet'){
+        return bsc
+    }else{
+        return bscTestnet
+    }
+}
+
+export function getEthChainNetwork(): Chain {
+    if(ENV_NETWORK === 'mainnet'){
+        return mainnet
+    }else{
+        return sepolia
     }
 }
 
 export function getPublicRpc() : string{
-    if(CHAIN === 'amoy'){
+    if(ENV_NETWORK === 'amoy'){
         return 'https://rpc-amoy.polygon.technology'
-    }else if(CHAIN === 'bsc'){
+    }else if(ENV_NETWORK === 'mainnet'){
         return 'https://binance.llamarpc.com'
     }else{
         return 'https://endpoints.omniatech.io/v1/bsc/testnet/public'

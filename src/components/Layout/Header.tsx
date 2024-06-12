@@ -17,7 +17,7 @@ const Header: React.FC<HeaderProps> = ({ handleConnect, address }) => {
 
             <nav>
                 <a href="/" className="">
-                    <img src="./aha_logo.png" alt="Robinos Logo" className="w-28 sm:w-40 h-16 py-2 -mt-3 -mb-1 sm:-my-8" />
+                    <img src="/aha_logo.png" alt="Aha Logo" className="w-28 sm:w-40 h-16 py-2 -mt-3 -mb-1 sm:-my-8" />
                 </a>
             </nav>
 

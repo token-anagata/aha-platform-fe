@@ -6,7 +6,7 @@ import { FROM_BLOCKNUMBER } from "@/configurations/chains";
 
 export async function getListStakeByAddress(address: Address) {
     const blockNumber = await publicClient.getBlockNumber()
-    console.log(blockNumber)
+
     const logs = await publicClient.getContractEvents({
         address: STAKE_CONTRACT_ADDRESS as Address,
         abi: ABI_STAKE_CONTRACT,
@@ -18,7 +18,6 @@ export async function getListStakeByAddress(address: Address) {
         fromBlock: FROM_BLOCKNUMBER,
         toBlock: blockNumber
     })
-    console.log(logs)
     // for (let i = 0; i < logs.length; i++) {
     //     const block = await publicClient.getBlock({
     //         blockHash: logs[i].blockHash

@@ -6,7 +6,7 @@ import {
 import { getContractAddress } from '../contract';
 import { Address } from 'viem/accounts';
 import { Hash, Log, parseEventLogs } from 'viem';
-import { getChainNetwork } from '@/configurations/chains';
+import { getBscChainNetwork } from '@/configurations/chains';
 import { ABI_USDT_CONTRACT } from '@/abi/usdt';
 
 /* global BigInt */
@@ -39,7 +39,7 @@ export async function formattedBalance(address: Address, type: string) {
 }
 
 export async function getTransactionConfirmed(hash: Hash) {
-    const chain = getChainNetwork()
+    const chain = getBscChainNetwork()
     const transaction = await waitForTransactionReceipt(config, {
         chainId: chain.id,
         hash: hash

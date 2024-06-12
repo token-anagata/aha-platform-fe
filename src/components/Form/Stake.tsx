@@ -13,6 +13,7 @@ import { stake } from "@/utils/wagmi/stake/writeContract"
 import { STAKE_MONTH, getApr, getCalculateApr } from "@/utils/stake"
 import { getCurrentDate, getEstimatedMonths } from "@/utils/date"
 import { approve } from "@/utils/wagmi/aha/writeContract"
+import { useBalance } from "wagmi"
 
 interface StakeProps {
     address: string | undefined;
@@ -28,6 +29,7 @@ const Stake: React.FC<StakeProps> = ({ address, isDisconnected, setLoadingList }
     const [estimatedApr, setEstimatedApr] = useState<number>(0)
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
     const [loadingBalance, setLoadingBalance] = useState<boolean>(false)
+    const { data: balance } = useBalance({ address: address as Address })
 
     useEffect(() => {
         const fetchData = async () => {
@@ -123,6 +125,12 @@ const Stake: React.FC<StakeProps> = ({ address, isDisconnected, setLoadingList }
         if (stakeMonth < 1) {
             toast.warning("Please choose a month first")
             return false
+        }
+
+        if(Number(balance?.value) < 10){
+            toast.warning(`Your BNB is lower than 10 wei please top up your BNB because gas fee is required to pay for the computational effort needed to process the transaction`)
+
+            return 
         }
 
         try {

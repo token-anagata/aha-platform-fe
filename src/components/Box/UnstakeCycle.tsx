@@ -32,7 +32,7 @@ const UnstakeCycle: React.FC<UnstakeCycleProps> = ({ address }) => {
     } catch (e) {
       console.log('unstake', e);
       setLoadingButton(false);
-      toast.error("There was an error during unstake, try again in a moment");
+      toast.error("This number cycle cannot be claimed yet because it has not passed the stake period");
     }
   };
 

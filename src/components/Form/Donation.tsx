@@ -1,14 +1,15 @@
-import { formatInputNumber } from "@/utils/number";
-import { decodeLog } from "@/utils/wagmi";
-import { buyTokens } from "@/utils/wagmi/ico/writeContract";
-import classNames from "classnames";
+import { formatInputNumberPoint } from "@/utils/number";
 import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Address, Hash } from "viem";
-import { useWaitForTransactionReceipt } from "wagmi";
+import { useBalance, useChainId, useSendTransaction, useSwitchChain, useWaitForTransactionReceipt } from "wagmi";
+import { ChainOpts } from "@/types/chain";
+import { transferUsdt } from "@/utils/wagmi/usdt/writeContract";
+import { transferAha } from "@/utils/wagmi/aha/writeContract";
 import ChainSelectBox, { CHAIN_OPTS } from "./Select/ChainSelectBox";
 import SpinIcon from "@/assets/svg/SpinIcon";
-import { ChainOpts } from "@/types/chain";
+import classNames from "classnames";
+import { REAL_DECIMALS } from "@/utils/wagmi";
 
 interface DonationProps {
     address: string | undefined;
@@ -16,85 +17,76 @@ interface DonationProps {
     handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
 
-type HashTransaction = {
-    hash: Hash | undefined;
-    mode: 'approve' | 'buy' | undefined;
-}
 
 const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect }) => {
     const [donation, setDonation] = useState<string>('')
     const [chain, setChain] = useState<ChainOpts>(CHAIN_OPTS[0])
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
-    const [hashTransaction, setHashTransaction] = useState<HashTransaction>({ hash: undefined, mode: undefined })
-    const { data: dataTransaction, isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-        hash: hashTransaction.hash,
+    const { sendTransactionAsync } = useSendTransaction();
+    const { data: balance } = useBalance({ address: address as Address });
+    const { switchChainAsync } = useSwitchChain();
+    const chainId = useChainId()
+    const [hash, setHash] = useState<Hash | undefined>(undefined)
+    const { isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+        hash: hash,
     });
 
     useEffect(() => {
-        (async () => {
-            if (!isConfirmed) return
+        if (!isConfirmed) return 
 
-            if (hashTransaction.mode === 'buy') {
-                // update list 
-                setHashTransaction(prevState => ({
-                    ...prevState,
-                    hash: undefined,
-                    mode: undefined
-                }))
-                setRefetch(true)
-                setLoadingButton(false)
-
-                toast.success('Your have been successfully buy AHA token')
-
-                return
-            }
-
-
-            try {
-                const topics = decodeLog(dataTransaction.logs)
-                const donate = Number(donation)
-                // Ask to permitted for move their funds to contract address
-                const result = await buyTokens(address as Address, donate)
-
-                console.log(topics)
-                if (result) {
-                    // update mode 
-                    setHashTransaction(prevState => ({
-                        ...prevState,
-                        hash: result,
-                        mode: 'buy'
-                    }))
-                }
-            } catch (e) {
-                console.log(e)
-                setLoadingButton(false)
-            }
-        })()
+        toast.success('Transfer was successfull')
+        setLoadingButton(false)
     }, [isConfirmed])
 
     const handleDonation = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
 
-        //const donate = Number(donation.replace(/,/g, ''))
+        const donate = Number(donation.replace(/,/g, ''))
+
+        if (chainId !== chain.id) {
+            const result = await switchChainAsync({ chainId: chain.id });
+            console.log(result)
+
+            return
+        }
+
+        if (Number(balance?.value) < 10) {
+            toast.warning(`Your BNB is lower than 10 wei please top up your BNB because gas fee is required to pay for the computational effort needed to process the transaction`)
+
+            return
+        }
 
         try {
             // loading button
             setLoadingButton(true)
-            // ask to pemitted for approve their balance
-            // const hashApprove = await approve(address as Address, donate)
+            if (chain.value === 'eth' || chain.value === 'bnb') {
+                const txHash = await sendTransactionAsync({
+                    to: chain.recipient as Address,
+                    value: BigInt(donate * 10 ** REAL_DECIMALS), // Convert to wei
+                })
 
-            // if (hashApprove) {
-            //     toast.success('Approve was successfull')
-            //     setHashTransaction(prevState => ({
-            //         ...prevState,
-            //         hash: hashApprove as Hash,
-            //         mode: 'approve'
-            //     }))
-            // }
+                if (txHash) {
+                    setHash(txHash)
+                }
+            } else if (chain.value === 'usdt') {
+                const txHashUsdt = await transferUsdt(address as Address, donate)
+                
+                if (txHashUsdt) {
+                    setHash(txHashUsdt)
+                }
+            } else if (chain.value === 'aha') {
+                const txHashAha = await transferAha(address as Address, donate)
+                
+                if (txHashAha) {
+                    setHash(txHashAha)
+                }
+            }
+
+            setRefetch(true)
         } catch (e) {
-            console.log('buy tokens', e)
+            console.log('transfer', e)
             setLoadingButton(false)
-            toast.error("There was an error durring buy token, try again in moment")
+            toast.error("There was an error during transfer, try again in moment")
         }
 
     };
@@ -105,38 +97,52 @@ const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect 
         // Remove commas for validation
         const numericValue = value.replace(/,/g, '')
 
-        if (numericValue === '0') return
+        // Check if the input is a valid number (including decimal point)
+        if (/^\d*\.?\d*$/.test(numericValue)) {
+            const sanitizedValue = numericValue.replace(/^0+(?!$|\.)/, '');
 
-        if (/^\d*$/.test(numericValue)) {
-            const numberValue = parseInt(numericValue, 10)
-            if (!isNaN(numberValue) || value === '') {
-                const formatAmount: string = formatInputNumber(numericValue)
-
-                setDonation(formatAmount)
+            const numberValue = parseFloat(sanitizedValue);
+            if (!isNaN(numberValue) || sanitizedValue === '') {
+                const formattedAmount: string = formatInputNumberPoint(sanitizedValue);
+                setDonation(formattedAmount);
             }
         }
     };
 
     const handleKeyDownAmount = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        const controlKeys = [
-            'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'
+        const allowedKeys = [
+            'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter', 'Home', 'End', 'Escape', 'Shift', 'Control', 'Meta'
         ];
-        if (!controlKeys.includes(e.key) && !/^\d$/.test(e.key)) {
-            e.preventDefault()
+
+        if (
+            e.ctrlKey ||
+            e.metaKey ||
+            allowedKeys.includes(e.key) ||
+            // Allow F1-F12 keys
+            (e.key.length === 2 && e.key.startsWith('F')) ||
+            // Allow digits
+            /^\d$/.test(e.key) ||
+            // Allow decimal point if not already present
+            (e.key === '.' && (e.currentTarget.value.split('.').length - 1) < 1)
+        ) {
+            return
         }
+        e.preventDefault()
     };
 
-    const handleChain = (chain: ChainOpts) => {
-        setChain(chain);
+    const handleSwitchChain = async (chain: ChainOpts) => {
+        setChain(chain)
     };
+
+    console.log(balance)
 
     return (
         <div className="flex flex-col space-y-5">
             <div className="relative">
-                <ChainSelectBox onChange={handleChain} />
+                <ChainSelectBox onChange={handleSwitchChain} />
             </div>
             <div className="relative">
-            <div className="absolute right-0 inset-y-0 flex items-center p-2 font-bold text-lg">
+                <div className="absolute right-0 inset-y-0 flex items-center p-2 font-bold text-lg">
                     <p className="uppercase">{chain.value}</p>&nbsp; {chain.icon}
                 </div>
                 <input
@@ -168,17 +174,18 @@ const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect 
                                 })}
                             />
                         )
-                            : (address ? "Buy Token" : "Connect")
+                            : (address ? "Donate" : "Connect")
                     }
                 </button>
             </div>
 
-            <div className="flex justify-center">
-                <p className="font-normal text-sm"> We very apreciate every piece your give</p>
-            </div>
-
             {loadingTransaction && (<div className="relative">
                 <p className="text-center">Waiting for transaction to be confirmed...</p>
+            </div>)}
+            {isConfirmed && (<div className="relative">
+                <p className="truncate text-center">
+                    Tx Hash:  <a className="text-aha-green-light text-ellipsis" target="_blank" href={`${chain.explorer}/tx/${hash}`}>{hash}</a>
+                </p>
             </div>)}
         </div>
     )

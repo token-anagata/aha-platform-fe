@@ -11,7 +11,7 @@ import classNames from "classnames";
 import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Address, Hash } from "viem";
-import { useWaitForTransactionReceipt } from "wagmi";
+import { useBalance, useWaitForTransactionReceipt } from "wagmi";
 
 interface IcoProps {
     tokenPrice: BigInt;
@@ -31,6 +31,7 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch, 
     const [aha, setAha] = useState<string>('')
     const [formattedTokenPrice, setformattedTokenPrice] = useState<string>('0')
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
+    const { data: balance } = useBalance({ address: address as Address })
     const [hashTransaction, setHashTransaction] = useState<HashTransaction>({ hash: undefined, mode: undefined })
     const { data: dataTransaction, isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
         hash: hashTransaction.hash,
@@ -96,6 +97,12 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch, 
 
             return 
         }  
+
+        if(Number(balance?.value) < 10){
+            toast.warning(`Your BNB is lower than 10 wei please top up your BNB because gas fee is required to pay for the computational effort needed to process the transaction`)
+
+            return 
+        }
 
         try {
             // loading button

@@ -1,9 +1,9 @@
 import { createPublicClient, http } from 'viem'
-import { getChainNetwork, getPublicRpc } from './chains'
+import { getBscChainNetwork, getPublicRpc } from './chains'
 
 const publicRpc = getPublicRpc()
 
 export const publicClient = createPublicClient({ 
-  chain: getChainNetwork(), 
+  chain: getBscChainNetwork(), 
   transport: http(publicRpc), 
 }) 

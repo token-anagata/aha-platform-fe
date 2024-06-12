@@ -8,7 +8,7 @@ import classNames from "classnames";
 
 interface LayoutProps {
     children: React.ReactNode;
-    type: string
+    type: string;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, type }) => {

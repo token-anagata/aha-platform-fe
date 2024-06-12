@@ -9,8 +9,8 @@ import { useAccountStaked } from "../../context/AccountStakedContext";
 import { formatNumber } from "../../utils/number";
 import { unstake } from "@/utils/wagmi/stake/writeContract";
 import { Address } from "viem";
-import { LINK_EXPLORER } from "@/configurations/common";
 import { DECIMALS } from "@/utils/wagmi";
+import { getBscChainNetwork } from "@/configurations/chains";
 
 interface ListStakeProps {
   listStake: any[];
@@ -18,6 +18,8 @@ interface ListStakeProps {
   setLoadingList: (loading: boolean) => void;
   address: string;
 }
+
+const bscChain = getBscChainNetwork()
 
 const ListStake: React.FC<ListStakeProps> = ({ listStake, loadingList, setLoadingList, address }) => {
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
@@ -108,7 +110,7 @@ const ListStake: React.FC<ListStakeProps> = ({ listStake, loadingList, setLoadin
               </p>
             </div>
             <a
-              href={`${LINK_EXPLORER}/tx/${v.transactionHash}`}
+              href={`${bscChain.blockExplorers?.default.url}/tx/${v.transactionHash}`}
               target="_blank"
               rel="noreferrer"
               className="block px-4 py-1 text-md text-white text-ellipsis overflow-hidden font-semibold rounded-full bg-aha-green-light hover:text-white hover:bg-aha-green-dark hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"

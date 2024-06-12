@@ -1,6 +1,5 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
-import { http } from '@wagmi/core';
-import { getChainNetwork } from "./chains";
+import { getNetworkEnviroment, getTransportChain } from "./chains";
 import { Chain } from "viem";
 
 interface Metadata {
@@ -10,6 +9,8 @@ interface Metadata {
   icons: string[];
 }
 
+const PROJECT_ID = import.meta.env.VITE_WEB3MODAL_PROJECT_ID as string;
+
 const metadata: Metadata = {
   name: 'Web3Modal',
   description: 'Web3Modal Example',
@@ -17,16 +18,18 @@ const metadata: Metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 };
 
-const projectId = import.meta.env.VITE_WEB3MODAL_PROJECT_ID as string;
-const chain = getChainNetwork();
+export const configWagmi = () => {
+  const env = getNetworkEnviroment();
+  const transport = getTransportChain()
 
-export const config = defaultWagmiConfig({
-  chains: [chain] as [Chain],
-  projectId,
-  metadata,
-  transports: {
-    [chain.id]: http(),
-  },
-  // Uncomment and specify wagmiOptions if needed
-  // ...wagmiOptions 
-});
+  return defaultWagmiConfig({
+    chains: env as [Chain, ...Chain[]],
+    projectId: PROJECT_ID,
+    metadata,
+    transports: transport,
+    // Uncomment and specify wagmiOptions if needed
+    // ...wagmiOptions 
+  });
+} 
+
+export const config = configWagmi()
