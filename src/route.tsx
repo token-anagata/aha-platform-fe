@@ -36,15 +36,18 @@ const routes: RouteObject[] = [
     path: '/',
     loader: verifyAuthloader,
     element: <IcoPage />,
+    errorElement: <ErrorPage />
   },
   {
     path: '/auth',
-    loader: grabTokenLoader
+    loader: grabTokenLoader,
+    errorElement: <ErrorPage />
   },
   {
     path: '/stake',
     loader: verifyAuthloader,
     element: <StakePage />,
+    errorElement: <ErrorPage />
   },
   {
     path: '/donation/:id',
