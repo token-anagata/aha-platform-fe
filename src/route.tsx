@@ -13,9 +13,10 @@ const grabTokenLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs) 
   if (token) {
     localStorage.setItem('_X_AUTH_', token as string)
 
-    return redirect('/')
+    window.location.replace(`${WEBBASE_URL}/dashboard`)
+    return false
   }
-
+  
   window.location.replace(WEBBASE_URL)
   return false
 }

@@ -3,10 +3,14 @@ import GasFee from "@/components/Description/GasFee";
 import Donation from "@/components/Form/Donation";
 import Layout from "@/components/Layout/Main";
 import ModalInfo from "@/components/Modal/ModalInfo";
+import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { useStore } from "@/context/StoreContext";
 import { OpenParams } from "@/types/account";
+import { getTokenPrice } from "@/utils/wagmi/ico/readContract";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import React, { MouseEvent, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 const DonationPage: React.FC = () => {
@@ -14,9 +18,10 @@ const DonationPage: React.FC = () => {
     const { address } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false);
     const { gasInfoDonation, setGasInfoDonation } = useStore();
+    const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
+    const { id } = useParams();
 
     const closeModal = () => setGasInfoDonation(false);
-
 
     const handleConnect = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {
         e.preventDefault();
@@ -29,10 +34,12 @@ const DonationPage: React.FC = () => {
 
     useEffect(() => {
         (async () => {
+            const price = await getTokenPrice(address || DEFAULT_ADDRESS as Address) as BigInt;
+
+            setTokenPrice(price)
             setRefetch(false)
         })()
     }, [address, refetch])
-
 
     return (
         <Layout type="default">
@@ -40,6 +47,8 @@ const DonationPage: React.FC = () => {
                 <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
                     <p className="text-2xl font-semibold text-center">Donate to</p>
                     <Donation
+                        id={id as string}
+                        tokenPrice={tokenPrice}
                         address={address}
                         handleConnect={handleConnect}
                         setRefetch={setRefetch}
@@ -50,7 +59,7 @@ const DonationPage: React.FC = () => {
                         <p className="text-lg font-semibold text-center">Make the World a Better Place</p>
                         <p className="font-normal text-sm text-center"> We very apreciate every piece your give</p>
                     </div>
-                    
+
                     <ModalInfo
                         isOpen={gasInfoDonation}
                         onClose={closeModal}

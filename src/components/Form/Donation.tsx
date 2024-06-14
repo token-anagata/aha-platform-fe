@@ -9,16 +9,22 @@ import { transferAha } from "@/utils/wagmi/aha/writeContract";
 import ChainSelectBox, { CHAIN_OPTS } from "./Select/ChainSelectBox";
 import SpinIcon from "@/assets/svg/SpinIcon";
 import classNames from "classnames";
-import { REAL_DECIMALS } from "@/utils/wagmi";
+import { DECIMALS, REAL_DECIMALS } from "@/utils/wagmi";
+import { useMutation } from "@tanstack/react-query";
+import { DonationType, usePostDonation } from "@/hooks/useDonation";
+import { ResponseCurrencies, useCurrencies } from "@/hooks/useCurrencies";
+import { getRateCurrenciesByName } from "@/utils/currencies";
 
 interface DonationProps {
+    id: string;
     address: string | undefined;
+    tokenPrice: BigInt;
     setRefetch: Dispatch<SetStateAction<boolean>>;
     handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
 
 
-const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect }) => {
+const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch, handleConnect }) => {
     const [donation, setDonation] = useState<string>('')
     const [chain, setChain] = useState<ChainOpts>(CHAIN_OPTS[0])
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
@@ -30,13 +36,40 @@ const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect 
     const { isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
         hash: hash,
     });
+    const { data: dataCurrencies } = useCurrencies()
+    const { mutate } = useMutation({
+        mutationFn: (data: DonationType) => {
+            return usePostDonation(data)
+        },
+    });
 
     useEffect(() => {
-        if (!isConfirmed) return 
+        if (!isConfirmed) return
 
         toast.success('Transfer was successfull')
         setLoadingButton(false)
     }, [isConfirmed])
+
+    useEffect(() => {
+        const donate = Number(donation.replace(/,/g, ''))
+        const formatTokenPrice: number = Number(tokenPrice) / Number(DECIMALS)
+        const rate = getRateCurrenciesByName(dataCurrencies as ResponseCurrencies, chain.value, formatTokenPrice)
+        const usdRate = donate * rate;
+
+        if (hash) {
+            mutate({
+                donation_id: hash as string,
+                donation_date: "2024-02-12",
+                project_id: id,
+                wallet_id: address as string,
+                donation_currency: chain.value,
+                donation_value: donate,
+                conversion_currency: "usd",
+                conversion_value: usdRate,
+                status: 1,
+            })
+        }
+    }, [hash])
 
     const handleDonation = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
@@ -70,13 +103,13 @@ const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect 
                 }
             } else if (chain.value === 'usdt') {
                 const txHashUsdt = await transferUsdt(address as Address, donate)
-                
+
                 if (txHashUsdt) {
                     setHash(txHashUsdt)
                 }
             } else if (chain.value === 'aha') {
                 const txHashAha = await transferAha(address as Address, donate)
-                
+
                 if (txHashAha) {
                     setHash(txHashAha)
                 }
@@ -133,8 +166,6 @@ const Donation: React.FC<DonationProps> = ({ address, setRefetch, handleConnect 
     const handleSwitchChain = async (chain: ChainOpts) => {
         setChain(chain)
     };
-
-    console.log(balance)
 
     return (
         <div className="flex flex-col space-y-5">
