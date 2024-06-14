@@ -1,4 +1,4 @@
-import { LoaderFunction, LoaderFunctionArgs, RouteObject, createBrowserRouter, redirect } from "react-router-dom";
+import { LoaderFunction, LoaderFunctionArgs, RouteObject, createBrowserRouter } from "react-router-dom";
 import IcoPage from "./views/IcoPage";
 import StakePage from "./views/StakePage";
 import DonationPage from "./views/DonationPage";

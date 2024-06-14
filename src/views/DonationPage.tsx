@@ -1,15 +1,17 @@
 import Divider from "@/components/Borders/Divider";
+import CardDonation from "@/components/Card/CardDonation";
 import GasFee from "@/components/Description/GasFee";
 import Donation from "@/components/Form/Donation";
 import Layout from "@/components/Layout/Main";
 import ModalInfo from "@/components/Modal/ModalInfo";
 import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { useStore } from "@/context/StoreContext";
+import { useProject } from "@/hooks/useProject";
 import { OpenParams } from "@/types/account";
 import { getTokenPrice } from "@/utils/wagmi/ico/readContract";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import React, { MouseEvent, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 
@@ -20,6 +22,8 @@ const DonationPage: React.FC = () => {
     const { gasInfoDonation, setGasInfoDonation } = useStore();
     const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
     const { id } = useParams();
+    const { data: dataProject, isError } = useProject(id as string)
+    const navigate = useNavigate()
 
     const closeModal = () => setGasInfoDonation(false);
 
@@ -33,6 +37,10 @@ const DonationPage: React.FC = () => {
     };
 
     useEffect(() => {
+        if (isError || dataProject === null) navigate('/not-found');
+    }, [dataProject, isError])
+
+    useEffect(() => {
         (async () => {
             const price = await getTokenPrice(address || DEFAULT_ADDRESS as Address) as BigInt;
 
@@ -43,11 +51,16 @@ const DonationPage: React.FC = () => {
 
     return (
         <Layout type="default">
-            <div className="flex justify-center">
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
+                <section className="w-full md:w-2/4 px-4 py-2 md:space-y-5 bg-gray-100 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+                    <CardDonation
+                        data={dataProject}
+                    />
+                </section>
                 <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
                     <p className="text-2xl font-semibold text-center">Donate to</p>
                     <Donation
-                        id={id as string}
+                        id={dataProject?.project_id as string}
                         tokenPrice={tokenPrice}
                         address={address}
                         handleConnect={handleConnect}
