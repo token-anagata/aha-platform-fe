@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import { DonationType, usePostDonation } from "@/hooks/useDonation";
 import { ResponseCurrencies, useCurrencies } from "@/hooks/useCurrencies";
 import { getRateCurrenciesByName } from "@/utils/currencies";
+import { formatDate } from "@/utils/date";
 
 interface DonationProps {
     id: string;
@@ -59,7 +60,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
         if (hash) {
             mutate({
                 donation_id: hash as string,
-                donation_date: "2024-02-12",
+                donation_date: formatDate(),
                 project_id: id,
                 wallet_id: address as string,
                 donation_currency: chain.value,

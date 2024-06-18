@@ -31,6 +31,22 @@ export function calculateRemainingTime(timestamp: bigint | number): { days: stri
     };
 }
 
+export function formatDate(date: Date = new Date): string {
+    let day: number | string = date.getDate();
+    let month: number | string = date.getMonth() + 1; // Months are zero-based
+    let year: number = date.getFullYear();
+
+    // Add leading zeros to day and month if needed
+    if (day < 10) {
+        day = '0' + day;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+
+    return `${year}-${month}-${day}`;
+}
+
 export function getCurrentDate(date: Date = new Date()): string {
     return `${date.getDate()}.${date.getUTCMonth() + 1}.${date.getFullYear()}`;
 }
