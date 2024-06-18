@@ -28,7 +28,7 @@ const CardDonation: React.FC<CardDonationProps> = ({ data }) => {
                 <img src={`${WEBBASE_URL}/storage/${data?.images[0].image}`} alt={data.project_name} className="w-full" />
             </div>
             <div className="pr-4">
-                <div className="flex justify-between">
+                <div className="flex justify-between pt-2">
                     <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">{data.project_name}</p>
                     <DonateIcon addClassName="w-14 h-12" />
                 </div>
@@ -36,7 +36,7 @@ const CardDonation: React.FC<CardDonationProps> = ({ data }) => {
             </div>
 
             <div className="shrink-0 mt-4 gap-4">
-                <div className="font-normal" dangerouslySetInnerHTML={createMarkup(data.project_plant)} />
+                <div className="font-normal" dangerouslySetInnerHTML={createMarkup(data.project_title)} />
 
             </div>
             <div className="py-2">
