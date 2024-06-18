@@ -6,15 +6,15 @@ import { useQuery } from '@tanstack/react-query';
 
 interface ProjectResponse {
     message: string;
-    project: Project[];
+    project: Project;
   }
   
 
 export const fetchProject = async (id : string): Promise<Project | null> => {
     const response : ProjectResponse = await request.get(`/api/projects/donation/${id}`);
     
-    if(response.project.length > 0){
-        return response.project[0] as Project;
+    if(response.project){
+        return response.project as Project;
     }
 
     return null
