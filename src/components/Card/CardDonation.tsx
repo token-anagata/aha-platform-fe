@@ -27,12 +27,13 @@ const CardDonation: React.FC<CardDonationProps> = ({ data }) => {
             <div className="max-h-52 aspect-h-2 aspect-w-2 overflow-hidden rounded-lg bg-gray-100 sm:col-span-4 lg:col-span-5">
                 <img src={`${WEBBASE_URL}/storage/${data?.images[0].image}`} alt={data.project_name} className="w-full" />
             </div>
-            <div className="pr-4">
-                <div className="flex justify-between pt-2">
+            <div className="flex justify-between pt-2">
+
+                <div>
                     <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">{data.project_name}</p>
-                    <DonateIcon addClassName="w-14 h-12" />
+                    <p className="text-md text-gray-400">{data.project_category}</p>
                 </div>
-                <p className="text-md text-gray-400">{data.project_category}</p>
+                <DonateIcon addClassName="w-14 h-12" />
             </div>
 
             <div className="shrink-0 mt-4 gap-4">
@@ -40,10 +41,10 @@ const CardDonation: React.FC<CardDonationProps> = ({ data }) => {
 
             </div>
             <div className="py-2">
-                <div className="flex justify-between">
+                <div className="flex flex-col md:flex-row justify-start md:justify-between">
                     <p className="text-base md:text-2xl font-semibold">{data.project_stage}</p>
 
-                    <div className="self-end text-base md:text-xl flex gap-2">
+                    <div className="self-start md:self-end text-base md:text-xl flex gap-2">
                         <p className="font-normal text-gray-800 dark:text-gray-300">Raised</p>
                         <p className={classNames({
                             'text-aha-green-lighter': Number(data.total_conversion_value) > Number(data.target_donation),

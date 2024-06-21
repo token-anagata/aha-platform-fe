@@ -15,7 +15,7 @@ const currenciesUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=binance
 
 export const fetchCurrencies = async (): Promise<ResponseCurrencies> => {
     const response = await request.get(currenciesUrl);
-
+    
     return response as ResponseCurrencies;
 };
 

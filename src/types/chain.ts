@@ -7,4 +7,5 @@ export interface ChainOpts {
     recipient: string;
     explorer: string | undefined;
     icon: ReactNode;
+    divider: boolean;
 }

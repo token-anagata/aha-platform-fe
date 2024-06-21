@@ -12,10 +12,10 @@ interface Metadata {
 const PROJECT_ID = import.meta.env.VITE_WEB3MODAL_PROJECT_ID as string;
 
 const metadata: Metadata = {
-  name: 'Web3Modal',
-  description: 'Web3Modal Example',
-  url: 'https://web3modal.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
+  name: 'AHA Web3Modal',
+  description: 'AHA Wallet Modal',
+  url: 'https://project-anagata.io',
+  icons: ['https://project-anagata.io/img/AHAWhite.png']
 };
 
 export const configWagmi = () => {

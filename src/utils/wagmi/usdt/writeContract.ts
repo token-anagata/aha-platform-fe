@@ -2,18 +2,18 @@
 import { config } from '@/configurations/wagmi';
 import { writeContract } from '@wagmi/core'
 import { Address } from 'viem';
-import { DECIMALS, REAL_DECIMALS } from '..';
+import { DECIMALS, REAL_DECIMALS  } from '..';
 import { ABI_USDT_CONTRACT } from '@/abi/usdt';
 import { ICO_CONTRACT_ADDRESS, USDT_CONTRACT_ADDRESS } from '@/configurations/contract';
 import { BNB_RECEPIENT } from '@/configurations/common';
 
-export async function approve(address: Address, amount: number) {
+export async function approve(address: Address, amount: number, contract: string = ICO_CONTRACT_ADDRESS) { 
     const result = await writeContract(config, {
         abi: ABI_USDT_CONTRACT,
         address: USDT_CONTRACT_ADDRESS as Address,
         functionName: 'approve',
         args: [
-            ICO_CONTRACT_ADDRESS,
+            contract,
             BigInt(amount) * DECIMALS,
         ],
         account: address

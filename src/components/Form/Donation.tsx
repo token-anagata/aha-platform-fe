@@ -4,8 +4,6 @@ import { toast } from "react-toastify";
 import { Address, Hash } from "viem";
 import { useBalance, useChainId, useSendTransaction, useSwitchChain, useWaitForTransactionReceipt } from "wagmi";
 import { ChainOpts } from "@/types/chain";
-import { transferUsdt } from "@/utils/wagmi/usdt/writeContract";
-import { transferAha } from "@/utils/wagmi/aha/writeContract";
 import ChainSelectBox, { CHAIN_OPTS } from "./Select/ChainSelectBox";
 import SpinIcon from "@/assets/svg/SpinIcon";
 import classNames from "classnames";
@@ -15,6 +13,9 @@ import { DonationType, usePostDonation } from "@/hooks/useDonation";
 import { ResponseCurrencies, useCurrencies } from "@/hooks/useCurrencies";
 import { getRateCurrenciesByName } from "@/utils/currencies";
 import { formatDate } from "@/utils/date";
+import { AHA_SYMBOL, USDT_SYMBOL } from "@/configurations/contract";
+import { BNB_RECEPIENT } from "@/configurations/common";
+import { donateToken } from "@/utils/wagmi/donation/writeContract";
 
 interface DonationProps {
     id: string;
@@ -23,7 +24,6 @@ interface DonationProps {
     setRefetch: Dispatch<SetStateAction<boolean>>;
     handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
-
 
 const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch, handleConnect }) => {
     const [donation, setDonation] = useState<string>('')
@@ -70,7 +70,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                 status: 1,
             })
         }
-    }, [hash])
+    }, [hash, dataCurrencies])
 
     const handleDonation = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
@@ -78,8 +78,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
         const donate = Number(donation.replace(/,/g, ''))
 
         if (chainId !== chain.id) {
-            const result = await switchChainAsync({ chainId: chain.id });
-            console.log(result)
+            await switchChainAsync({ chainId: chain.id });
 
             return
         }
@@ -89,7 +88,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
 
             return
         }
-
+        
         try {
             // loading button
             setLoadingButton(true)
@@ -103,13 +102,13 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                     setHash(txHash)
                 }
             } else if (chain.value === 'usdt') {
-                const txHashUsdt = await transferUsdt(address as Address, donate)
+                const txHashUsdt = await donateToken(address as Address, donate, USDT_SYMBOL, BNB_RECEPIENT)
 
                 if (txHashUsdt) {
                     setHash(txHashUsdt)
                 }
             } else if (chain.value === 'aha') {
-                const txHashAha = await transferAha(address as Address, donate)
+                const txHashAha = await donateToken(address as Address, donate, AHA_SYMBOL, BNB_RECEPIENT)
 
                 if (txHashAha) {
                     setHash(txHashAha)
