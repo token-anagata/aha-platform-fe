@@ -17,7 +17,7 @@ import { useAccount } from "wagmi";
 
 const DonationPage: React.FC = () => {
     const { open } = useWeb3Modal();
-    const { address } = useAccount();
+    const { address, connector } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false);
     const { gasInfoDonation, setGasInfoDonation } = useStore();
     const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
@@ -35,6 +35,8 @@ const DonationPage: React.FC = () => {
             open({ view: "Connect" } as OpenParams);
         }
     };
+
+    console.log(connector)
 
     useEffect(() => {
         if (isError || dataProject === null) navigate('/not-found');
