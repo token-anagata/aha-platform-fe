@@ -6,6 +6,7 @@ import { WEBBASE_URL } from "./configurations/common";
 import ErrorPage from "./views/error/ErrorPage";
 import NotFound from "./views/error/NotFound";
 import { fetchAuthData } from "./hooks/useAuth";
+import InvestPage from "./views/InvestPage";
 
 const grabTokenLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -54,6 +55,12 @@ const routes: RouteObject[] = [
     path: '/donation/:id',
     loader: verifyAuthloader,
     element: <DonationPage />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: '/invest/:id',
+    loader: verifyAuthloader,
+    element: <InvestPage />,
     errorElement: <ErrorPage />
   },
   {

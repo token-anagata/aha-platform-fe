@@ -8,3 +8,4 @@ export const USDT_CONTRACT_ADDRESS = import.meta.env.VITE_USDT_CONTRACT as strin
 export const ICO_CONTRACT_ADDRESS = import.meta.env.VITE_ICO_CONTRACT as string;
 export const STAKE_CONTRACT_ADDRESS = import.meta.env.VITE_STAKE_CONTRACT as string;
 export const DONATION_CONTRACT_ADDRESS = import.meta.env.VITE_DONATION_CONTRACT as string;
+export const INVEST_CONTRACT_ADDRESS = import.meta.env.VITE_INVEST_CONTRACT as string;

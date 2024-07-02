@@ -7,6 +7,8 @@ interface StoreContextProps {
   setGasInfoStake: (value: boolean) => void;
   gasInfoDonation: boolean;
   setGasInfoDonation: (value: boolean) => void;
+  gasInfoInvest: boolean;
+  setGasInfoInvest: (value: boolean) => void;
 }
 
 const StoreContext = createContext<StoreContextProps | undefined>(undefined);
@@ -24,6 +26,11 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   const [gasInfoDonation, setGasInfoDonation] = useState<boolean>(() => {
     const savedValue = localStorage.getItem('GAS_INFO_DONATE');
+    return savedValue !== null ? false : true;
+  });
+
+  const [gasInfoInvest, setGasInfoInvest] = useState<boolean>(() => {
+    const savedValue = localStorage.getItem('GAS_INFO_INVEST');
     return savedValue !== null ? false : true;
   });
 
@@ -46,8 +53,23 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     }
   }, [gasInfoDonation]);
 
+  useEffect(() => {
+    if (!gasInfoInvest) {
+      localStorage.setItem('GAS_INFO_INVEST', JSON.stringify(gasInfoInvest));
+    }
+  }, [gasInfoInvest]);
+
   return (
-    <StoreContext.Provider value={{ gasInfoIco, setGasInfoIco, gasInfoStake, setGasInfoStake, gasInfoDonation, setGasInfoDonation }}>
+    <StoreContext.Provider value={{
+      gasInfoIco,
+      setGasInfoIco,
+      gasInfoStake,
+      setGasInfoStake,
+      gasInfoDonation,
+      setGasInfoDonation,
+      gasInfoInvest,
+      setGasInfoInvest,
+    }}>
       {children}
     </StoreContext.Provider>
   );
