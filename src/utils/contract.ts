@@ -6,6 +6,14 @@ import { ETH_SYMBOL, ICO_CONTRACT_ADDRESS, ICO_SYMBOL } from "@/configurations/c
 import { AHA_CONTRACT_ADDRESS, AHA_SYMBOL, USDT_CONTRACT_ADDRESS, USDT_SYMBOL } from "@/configurations/contract";
 import { Address } from "viem";
 
+export const INVEST_STATUS = [
+    'FREZE FUNDING',
+    'ON FUNDING',
+    'FULFILLED',
+    'NOT FULFILLED',
+    'FINISHED'
+]
+
 export function getTokenSymbol(symbol: string) : string{
     
     switch (symbol) {

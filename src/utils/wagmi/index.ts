@@ -38,6 +38,16 @@ export async function formattedBalance(address: Address, type: string) {
     return Number(balance?.formatted)
 }
 
+export async function formattedMainBalance(address: Address) {
+
+    const balance = await getBalance(config, {
+        address: address as Address
+    })
+
+    return Number(balance?.formatted)
+}
+
+
 export async function getTransactionConfirmed(hash: Hash) {
     const chain = getBscChainNetwork()
     const transaction = await waitForTransactionReceipt(config, {

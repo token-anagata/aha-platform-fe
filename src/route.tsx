@@ -7,6 +7,7 @@ import ErrorPage from "./views/error/ErrorPage";
 import NotFound from "./views/error/NotFound";
 import { fetchAuthData } from "./hooks/useAuth";
 import InvestPage from "./views/InvestPage";
+import ProjectPage from "./views/ProjectPage";
 
 const grabTokenLoader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -61,6 +62,12 @@ const routes: RouteObject[] = [
     path: '/invest/:id',
     loader: verifyAuthloader,
     element: <InvestPage />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: '/project/:id',
+    loader: verifyAuthloader,
+    element: <ProjectPage />,
     errorElement: <ErrorPage />
   },
   {

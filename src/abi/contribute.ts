@@ -184,6 +184,19 @@ export const ABI_CONTRIBUTE_CONTRACT = [
         "type": "event"
     },
     {
+        "inputs": [],
+        "name": "_projectCounter",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -242,11 +255,6 @@ export const ABI_CONTRIBUTE_CONTRACT = [
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_projectId",
-                "type": "uint256"
-            },
             {
                 "internalType": "uint256",
                 "name": "_duration",

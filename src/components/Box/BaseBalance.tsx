@@ -9,7 +9,7 @@ interface IcoBalanceProps {
     aha: number;
 }
 
-const IcoBalance: React.FC<IcoBalanceProps> = ({ page, usdt, aha }) => {
+const BaseBalance: React.FC<IcoBalanceProps> = ({ page, usdt, aha }) => {
     return (
         <div className="grid grid-cols-2 text-lg mb-8">
             <div className="flex">
@@ -27,4 +27,4 @@ const IcoBalance: React.FC<IcoBalanceProps> = ({ page, usdt, aha }) => {
     )
 }
 
-export default IcoBalance
+export default BaseBalance

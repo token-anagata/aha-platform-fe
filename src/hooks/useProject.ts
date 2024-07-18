@@ -7,13 +7,26 @@ import { useQuery } from '@tanstack/react-query';
 interface ProjectResponse {
     message: string;
     project: Project;
-  }
-  
+}
 
-export const fetchProject = async (id : string): Promise<Project | null> => {
-    const response : ProjectResponse = await request.get(`/api/projects/donation/${id}`);
-    
-    if(response.project){
+export interface ProjectType {
+    donation_id: string;
+    donation_date: string;
+    project_id: string;
+    wallet_id: string;
+    donation_currency: string;
+    donation_value: number;
+    conversion_currency: string;
+    conversion_value: number;
+    status: number;
+}
+
+
+
+export const fetchProject = async (id: string): Promise<Project | null> => {
+    const response: ProjectResponse = await request.get(`/api/projects/donation/${id}`);
+
+    if (response.project) {
         return response.project as Project;
     }
 
@@ -27,5 +40,11 @@ export const useProject = (id: string) => {
         staleTime: 2000000,
     });
 };
+
+export const usePostProject = async (params: ProjectType) => {
+    const response = await request.post('/api/donation', params);
+
+    return response
+}
 
 

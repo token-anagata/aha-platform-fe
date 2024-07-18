@@ -31,7 +31,7 @@ export const formatInputNumber = (num: string): string => {
 */
 export const formatInputNumberPoint = (num: string): string => {
     if (isNaN(parseFloat(num))) {
-        return '0';
+        return '';
     }
 
     const parts = num.split('.');
