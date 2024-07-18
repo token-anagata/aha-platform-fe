@@ -1,7 +1,7 @@
-import { WEBBASE_URL } from '@/configurations/common';
+import { API_URL, WEBBASE_URL } from '@/configurations/common';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-axios.defaults.baseURL = WEBBASE_URL;
+axios.defaults.baseURL = API_URL;
 
 axios.interceptors.request.use((config) => {
     const token = localStorage.getItem('_X_AUTH_')
