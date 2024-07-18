@@ -5,8 +5,8 @@ import { Address, Hash } from "viem";
 import { useBalance, useWaitForTransactionReceipt } from "wagmi";
 import SpinIcon from "@/assets/svg/SpinIcon";
 import classNames from "classnames";
-import { useMutation } from "@tanstack/react-query";
-import { ProjectType, usePostProject } from "@/hooks/useProject";
+// import { useMutation } from "@tanstack/react-query";
+//import { ProjectType, usePostProject } from "@/hooks/useProject";
 import { getBscChainNetwork } from "@/configurations/chains";
 import { type Project } from "@/types/project";
 import { INVEST_STATUS } from "@/utils/contract";
@@ -36,11 +36,12 @@ const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handle
     const { isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
         hash: hash,
     });
-    const { mutate } = useMutation({
-        mutationFn: (data: ProjectType) => {
-            return usePostProject(data)
-        },
-    });
+    // const { mutate } = useMutation({
+    //     mutationFn: (data: ProjectType) => {
+    //         return usePostProject(data)
+    //     },
+    // });
+    console.log(id)
 
     useEffect(() => {
         if (!isConfirmed) return
