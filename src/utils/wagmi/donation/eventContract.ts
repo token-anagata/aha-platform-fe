@@ -1,21 +1,22 @@
 import { Address } from "viem";
 import { publicClient } from "@/configurations/viem";
-import { STAKE_CONTRACT_ADDRESS } from "@/configurations/contract";
-import { ABI_STAKE_CONTRACT } from "@/abi/stake";
-import { STAKE_BLOCKNUMBER } from "@/configurations/chains";
+import { DONATION_CONTRACT_ADDRESS } from "@/configurations/contract";
+import { DONATE_BLOCKNUMBER } from "@/configurations/chains";
+import { ABI_DONATION_CONTRACT } from "@/abi/donation";
 
-export async function getListStakeByAddress(address: Address) {
+export async function getListDonate(projectId: string) {
     const blockNumber = await publicClient.getBlockNumber()
 
     const logs = await publicClient.getContractEvents({
-        address: STAKE_CONTRACT_ADDRESS as Address,
-        abi: ABI_STAKE_CONTRACT,
-        eventName: 'Staked',
+        address: DONATION_CONTRACT_ADDRESS as Address,
+        abi: ABI_DONATION_CONTRACT,
+        eventName: 'DonationReceived',
         args: {
-            user: address,
+            //user: address,
+            projectId: projectId
             //to: AHA_STAKING_ADDRESS
         },
-        fromBlock: STAKE_BLOCKNUMBER,
+        fromBlock: DONATE_BLOCKNUMBER,
         toBlock: blockNumber
     })
     // for (let i = 0; i < logs.length; i++) {
@@ -26,5 +27,5 @@ export async function getListStakeByAddress(address: Address) {
     //     logs[i].timestamp = Number(block.timestamp)
     // }
 
-    return logs
+    return logs.reverse()
 }

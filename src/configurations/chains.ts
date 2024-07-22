@@ -3,7 +3,8 @@ import { Chain, bsc, bscTestnet, hardhat, mainnet, sepolia } from "wagmi/chains"
 
 export const ENV_NETWORK : string = import.meta.env.VITE_ENV_NETWORK
 
-export const FROM_BLOCKNUMBER = import.meta.env.VITE_FROM_BLOCKNUMBER
+export const STAKE_BLOCKNUMBER = import.meta.env.VITE_STAKE_BLOCKNUMBER
+export const DONATE_BLOCKNUMBER = import.meta.env.VITE_DONATE_BLOCKNUMBER
 
 export function getNetworkEnviroment() : Chain[]{
     if(ENV_NETWORK === 'testnet'){

@@ -1,4 +1,5 @@
 import Divider from "@/components/Borders/Divider";
+import ListDonate from "@/components/Box/ListDonate";
 import CardDonation from "@/components/Card/CardDonation";
 import GasFee from "@/components/Description/GasFee";
 import Donation from "@/components/Form/Donation";
@@ -8,6 +9,7 @@ import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { useStore } from "@/context/StoreContext";
 import { useProject } from "@/hooks/useProject";
 import { OpenParams } from "@/types/account";
+import { getListDonate } from "@/utils/wagmi/donation/eventContract";
 import { getTokenPrice } from "@/utils/wagmi/ico/readContract";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import React, { MouseEvent, useEffect, useState } from "react";
@@ -21,6 +23,8 @@ const DonationPage: React.FC = () => {
     const [refetch, setRefetch] = useState<boolean>(false);
     const { gasInfoDonation, setGasInfoDonation } = useStore();
     const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
+    const [listDonate, setListDonate] = useState<any[]>([]);
+    const [loadingList, setLoadingList] = useState<boolean>(true);
     const { id } = useParams();
     const { data: dataProject, isError } = useProject(id as string)
     const navigate = useNavigate()
@@ -45,9 +49,12 @@ const DonationPage: React.FC = () => {
     useEffect(() => {
         (async () => {
             const price = await getTokenPrice(address || DEFAULT_ADDRESS as Address) as BigInt;
+            const list = await getListDonate(dataProject?.project_id as string);
 
+            setListDonate(list);
             setTokenPrice(price)
             setRefetch(false)
+            setLoadingList(false)
         })()
     }, [address, refetch])
 
@@ -84,6 +91,17 @@ const DonationPage: React.FC = () => {
                         <GasFee />
                     </ModalInfo>
                 </section>
+            </div>
+
+            <div className="grid max-w-screen-xl mt-8">
+
+                {/** List donate */}
+                <ListDonate
+                    id={dataProject?.project_id as string}
+                    tokenPrice={tokenPrice}
+                    listDonate={listDonate}
+                    loadingList={loadingList}
+                />
             </div>
         </Layout>
     );

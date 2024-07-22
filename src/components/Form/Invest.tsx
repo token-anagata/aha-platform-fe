@@ -26,7 +26,7 @@ interface InvestProps {
 const bscChain = getBscChainNetwork()
 
 const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, handleConnect }) => {
-    const [donation, setInvest] = useState<string>('')
+    const [amount, setAmount] = useState<string>('')
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
     const { data: balance } = useBalance({ address: address as Address });
     const [hash, setHash] = useState<Hash | undefined>(undefined)
@@ -48,7 +48,7 @@ const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, ha
     }, [isConfirmed])
 
     useEffect(() => {
-        const invest = Number(donation.replace(/,/g, ''))
+        const invest = Number(amount.replace(/,/g, ''))
         const formatTokenPrice: number = Number(tokenPrice) / Number(DECIMALS)
         const rate = getRateCurrenciesByName(dataCurrencies as ResponseCurrencies, 'usdt', formatTokenPrice)
         const usdRate = invest * rate;
@@ -71,7 +71,7 @@ const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, ha
     const handleInvest = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
 
-        const invest = Number(donation.replace(/,/g, ''))
+        const invest = Number(amount.replace(/,/g, ''))
 
         if (Number(balance?.value) < 10) {
             toast.warning(`Your BNB is lower than 10 wei please top up your BNB because gas fee is required to pay for the computational effort needed to process the transaction`)
@@ -110,7 +110,7 @@ const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, ha
             const numberValue = parseFloat(sanitizedValue);
             if (!isNaN(numberValue) || sanitizedValue === '') {
                 const formattedAmount: string = formatInputNumberPoint(sanitizedValue);
-                setInvest(formattedAmount);
+                setAmount(formattedAmount);
             }
         }
     };
@@ -145,7 +145,7 @@ const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, ha
                 <input
                     className="appearance-none border py-4 pl-4 text-xl bg-gray-100 dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 placeholder:dark:text-gray-200 focus:placeholder-gray-600 transition rounded-sm w-full outline-none"
                     type="text"
-                    value={donation}
+                    value={amount}
                     placeholder="0"
                     onChange={handleChangeInvest}
                     onKeyDown={handleKeyDownAmount}
@@ -188,15 +188,15 @@ const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, ha
                 <h4 className="font-bold text-xl px-2 py-2">Summary</h4>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>Date</div>
-                    <div className="text-right">{getCurrentDate()} - {getEstimatedMonths(24)}</div>
+                    <div className="text-right">{getCurrentDate()} - {getEstimatedMonths(30)}</div>
                 </div>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>Estimated earn</div>
-                    <div className="text-right">{formatNumber((1000 || 0), 0, 2)}</div>
+                    <div className="text-right">{formatNumber((Number(amount.replace(/,/g, '')) * 0.2  || 0), 0, 2)}</div>
                 </div>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>APR</div>
-                    <div className="text-right">{(50 * 100) || 0}%</div>
+                    <div className="text-right">{20}%</div>
                 </div>
                 <p className="text-md self-end">Not working?&nbsp;
                     <a href="https://t.me/AnagataGlobal" className="font-bold text-aha-green-lighter hover:text-[#22c55e]">
