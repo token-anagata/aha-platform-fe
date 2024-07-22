@@ -4,6 +4,7 @@ import { WEBBASE_URL } from "@/configurations/common";
 import { Project } from "@/types/project";
 import { formatNumber } from "@/utils/number";
 import classNames from "classnames";
+import ImageWithFallback from "../Image/ImageFallback";
 
 interface CardDonationProps {
     data: Project | null | undefined;
@@ -25,7 +26,12 @@ const CardDonation: React.FC<CardDonationProps> = ({ data }) => {
     return (
         <div className="flex flex-col justify-between items-stretch min-h-full">
             <div className="max-h-52 aspect-h-2 aspect-w-2 overflow-hidden rounded-lg bg-gray-100 sm:col-span-4 lg:col-span-5">
-                <img src={`${WEBBASE_URL}/storage/${data?.images[0].image}`} alt={data.project_name} className="w-full" />
+                <ImageWithFallback
+                    src={`${WEBBASE_URL}/storage/${data?.images[0].image}`}
+                    fallbackSrc="/image-couldnt-load.webp"
+                    alt={data.project_name}
+                    className="w-full h-full"
+                />
             </div>
             <div className="flex justify-between pt-2">
 
