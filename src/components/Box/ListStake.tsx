@@ -74,7 +74,7 @@ const ListStake: React.FC<ListStakeProps> = ({ listStake, loadingList, setLoadin
       if (result) {
         setLoadingButton(false);
         setLoadingList(true);
-        toast.success('Unstake have been successfully');
+        toast.success('Unstake has been successful. This process will take approximately 3 x 24 hours');
       }
     } catch (e) {
       console.log('unstake', e);
@@ -94,7 +94,7 @@ const ListStake: React.FC<ListStakeProps> = ({ listStake, loadingList, setLoadin
   return (
     <section className="col-span-2 py-6 space-y-8">
       {!loadingList && listStake.map((v, k) => (
-        <div key={k} className="flex flex-col sm:flex-row space-x-4 space-y-8 sm:justify-between px-8 py-2 mx-auto bg-gray-300 rounded-sm shadow-lg sm:py-4 sm:flex sm:items-center sm:space-y-0 bg-opacity-60 dark:bg-opacity-30">
+        <div key={k} className="flex flex-col sm:flex-row space-x-4 space-y-8 sm:justify-between px-8 py-2 mx-auto bg-gray-300 dark:bg-gray-50 rounded-sm shadow-lg sm:py-4 sm:flex sm:items-center sm:space-y-0 bg-opacity-60 dark:bg-opacity-40">
           <img className="block mx-auto h-24 rounded-full sm:mx-0 sm:shrink-0" src="./coin.webp" alt="AHA Token" />
           <div className="text-center space-y-2 sm:text-left">
             <div className="flex flex-col sm:flex-row space-y-0.5 sm:space-y-0 space-x-0 sm:space-x-2 text-center justify-center">

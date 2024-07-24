@@ -9,21 +9,18 @@ import { getBscChainNetwork } from "@/configurations/chains";
 import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { AHA_SYMBOL, USDT_SYMBOL } from "@/configurations/contract";
 import { useStore } from "@/context/StoreContext";
-import { OpenParams } from "@/types/account";
 import { RangePrice } from "@/types/token";
 //import { getTokenHolders } from "@/utils/bsc";
 import { formattedBalance } from "@/utils/wagmi";
 import { getAllowance } from "@/utils/wagmi/aha/readContract";
 import { getMaxAmount, getMinAmount, getTokenPrice, getTokenSold } from "@/utils/wagmi/ico/readContract";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Address } from "viem";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 
 const bscChain = getBscChainNetwork()
 
 const IcoPage: React.FC = () => {
-    const { open } = useWeb3Modal();
     const { address, isConnected, status } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false)
     const [ahaBalance, setAhaBalance] = useState<number>(0)
@@ -37,15 +34,6 @@ const IcoPage: React.FC = () => {
     const { switchChainAsync } = useSwitchChain();
     const chainId = useChainId()
     const closeModal = () => setGasInfoIco(false);
-
-    const handleConnect = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {
-        e.preventDefault();
-        if (address) {
-            open({ view: "Account" } as OpenParams);
-        } else {
-            open({ view: "Connect" } as OpenParams);
-        }
-    };
 
     useEffect(() => {
         (async () => {
@@ -89,13 +77,12 @@ const IcoPage: React.FC = () => {
     return (
         <Layout type="default">
             <div className="flex justify-center">
-                <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+                <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 dark:bg-gray-50 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-40">
                     <IcoBalance page="ico" usdt={usdtBalance} aha={ahaBalance} />
                     <Ico
                         address={address}
                         tokenPrice={tokenPrice}
                         rangePrice={rangePrice}
-                        handleConnect={handleConnect}
                         setRefetch={setRefetch}
                     />
                     <Divider />

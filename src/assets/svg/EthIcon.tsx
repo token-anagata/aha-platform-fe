@@ -22,5 +22,3 @@ const EthIcon : React.FC<SVGEelement> = ({ addClassName }) => {
 }
 
 export default EthIcon
-
-

@@ -41,7 +41,8 @@ import React, {
     const [lastStaked, setLastStaked] = useState<string>('');
     const [currentStake, setCurrentStake] = useState<number | null>(null);
     const [unclaimedStake, setUnclaimedStake] = useState<number>(0);
-  
+
+
     const updateAmountStaked = (newAmount: number) => {
       setAmountStaked(newAmount);
     };

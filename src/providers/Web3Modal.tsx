@@ -12,7 +12,7 @@ createWeb3Modal({
     wagmiConfig: config,
     projectId: import.meta.env.VITE_WEB3MODAL_PROJECT_ID as string,
     enableAnalytics: true,
-    enableOnramp: false,
+    enableOnramp: true,
     allowUnsupportedChain: true,
     tokens: {
         [bscTestnet.id]: {

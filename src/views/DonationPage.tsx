@@ -8,17 +8,14 @@ import ModalInfo from "@/components/Modal/ModalInfo";
 import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { useStore } from "@/context/StoreContext";
 import { useProject } from "@/hooks/useProject";
-import { OpenParams } from "@/types/account";
 import { getListDonate } from "@/utils/wagmi/donation/eventContract";
 import { getTokenPrice } from "@/utils/wagmi/ico/readContract";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 const DonationPage: React.FC = () => {
-    const { open } = useWeb3Modal();
     const { address, connector } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false);
     const { gasInfoDonation, setGasInfoDonation } = useStore();
@@ -30,15 +27,6 @@ const DonationPage: React.FC = () => {
     const navigate = useNavigate()
 
     const closeModal = () => setGasInfoDonation(false);
-
-    const handleConnect = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {
-        e.preventDefault();
-        if (address) {
-            open({ view: "Account" } as OpenParams);
-        } else {
-            open({ view: "Connect" } as OpenParams);
-        }
-    };
 
     console.log(connector)
 
@@ -61,18 +49,17 @@ const DonationPage: React.FC = () => {
     return (
         <Layout type="default">
             <div className="flex flex-col sm:flex-row justify-between gap-4">
-                <section className="w-full md:w-2/4 px-4 py-2 md:space-y-5 bg-gray-100 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+                <section className="w-full md:w-2/4 px-4 py-2 md:space-y-5 bg-gray-100 dark:bg-gray-50 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-40">
                     <CardDonation
                         data={dataProject}
                     />
                 </section>
-                <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+                <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 dark:bg-gray-50 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-40">
                     <p className="text-2xl font-semibold text-center">Donate to</p>
                     <Donation
                         id={dataProject?.project_id as string}
                         tokenPrice={tokenPrice}
                         address={address}
-                        handleConnect={handleConnect}
                         setRefetch={setRefetch}
                     />
                     <Divider />

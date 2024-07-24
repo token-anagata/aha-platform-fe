@@ -67,7 +67,7 @@ const MainStake: React.FC<MainStakeProps> = ({ address, loadingList, setLoadingL
   };
 
   return (
-    <section className="col-span-2 px-2 py-6 space-y-8 bg-gray-300 shadow-xl sm:col-span-1 sm:px-4 rounded-sm bg-opacity-60 dark:bg-opacity-30">
+    <section className="col-span-2 px-2 py-6 space-y-8 bg-gray-300 dark:bg-gray-50 shadow-xl sm:col-span-1 sm:px-4 rounded-sm bg-opacity-60 dark:bg-opacity-40">
       <div className="space-y-2 font-semibold text-justify">
         <div className="grid grid-cols-2">
           <div className="col-span-1">Amount Staked:</div>

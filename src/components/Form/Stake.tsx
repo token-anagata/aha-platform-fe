@@ -1,7 +1,5 @@
 import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import SpinIcon from "../../assets/svg/SpinIcon"
-
 import classNames from "classnames"
 
 import { SUCCESS_STATUS, formattedBalance, getTransactionConfirmed } from "@/utils/wagmi"
@@ -14,6 +12,7 @@ import { STAKE_MONTH, getApr, getCalculateApr } from "@/utils/stake"
 import { getCurrentDate, getEstimatedMonths } from "@/utils/date"
 import { approve } from "@/utils/wagmi/aha/writeContract"
 import { useBalance } from "wagmi"
+import ConnectButton from "../Buttons/ConnectButton"
 
 interface StakeProps {
     address: string | undefined;
@@ -165,8 +164,8 @@ const Stake: React.FC<StakeProps> = ({ address, isDisconnected, setLoadingList }
     }
 
     return (
-        <section className="col-span-2 grid sm:grid-rows-1 px-2 py-2 space-y-3 bg-gray-300 shadow-xl sm:col-span-1 sm:px-4 rounded-sm bg-opacity-60 dark:bg-opacity-30">
-            <div className="flex flex-col">
+        <section className="col-span-2 grid sm:grid-rows-1 px-2 py-2 space-y-3 bg-gray-300 dark:bg-gray-50 shadow-xl sm:col-span-1 sm:px-4 rounded-sm bg-opacity-60 dark:bg-opacity-40">
+            <div className="flex flex-col dark:text-white">
                 <p className="font-medium text-lg text-right py-4">
                     {address && (
                         <button
@@ -185,7 +184,7 @@ const Stake: React.FC<StakeProps> = ({ address, isDisconnected, setLoadingList }
                     {formatNumber(Number(walletBalance), 0, 3)} AHA
                 </p>
 
-                <div className="flex justify-between w-full max-w-sm text-md font-semibold text-aha-green-light">
+                <div className="flex justify-between w-full max-w-sm text-md font-semibold text-aha-green-light dark:text-aha-green-lighter">
                     {
                         ['Max', '75%', '50%', '25%'].map((v, k) => (
                             <span
@@ -209,20 +208,17 @@ const Stake: React.FC<StakeProps> = ({ address, isDisconnected, setLoadingList }
                         onChange={handleChangeAmount}
                         onKeyDown={handleKeyDownAmount}
                     />
-                    <button
+                    <ConnectButton 
                         className={classNames({
                             'btn items-center min-w-fit w-1/3 btn py-1 px-2 gap-x-2 text-xl text-center rounded-r-sm': true,
                             //'bg-opacity-50 pointer-events-none': !saleActive,
                             'inline-flex': loadingButton
                         })}
-                        disabled={loadingButton}
-                        onClick={handleStake}>
-                        {loadingButton ? <><SpinIcon
-                            addClassName="animate-spin -ml-1 mr-3 text-white h-5 w-5"
-                        /> Processing</> : 'Approve & Stake'}
-                    </button>
-
-
+                        address={address}
+                        buttonText="Approve & Stake"
+                        loadingButton={loadingButton}
+                        handleClick={handleStake}
+                    />
                 </div>
             </div>
 
@@ -246,7 +242,7 @@ const Stake: React.FC<StakeProps> = ({ address, isDisconnected, setLoadingList }
                 }
             </div>
 
-            <div className="flex flex-col justify-between p-2 gap-2">
+            <div className="flex flex-col justify-between p-2 gap-2 data:text-white">
                 <h4 className="font-bold text-xl px-2 py-2">Summary</h4>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>Staking Date</div>

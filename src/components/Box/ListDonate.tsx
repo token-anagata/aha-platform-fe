@@ -9,6 +9,7 @@ import DonateIcon from "@/assets/svg/DonateIcon";
 import { AHA_CONTRACT_ADDRESS } from "@/configurations/contract";
 import { ResponseCurrencies, useCurrencies } from "@/hooks/useCurrencies";
 import { getRateCurrenciesByName } from "@/utils/currencies";
+import { useDarkMode } from "@/context/DarkModeContext";
 
 interface ListDonateProps {
     id: string;
@@ -20,6 +21,7 @@ interface ListDonateProps {
 const bscChain = getBscChainNetwork()
 
 const ListDonate: React.FC<ListDonateProps> = ({ listDonate, loadingList, tokenPrice }) => {
+    const { darkMode } = useDarkMode();
     const { data: dataCurrencies } = useCurrencies()
     const formatTokenPrice: number = Number(tokenPrice) / Number(DECIMALS)
 
@@ -58,7 +60,7 @@ const ListDonate: React.FC<ListDonateProps> = ({ listDonate, loadingList, tokenP
         <section className="col-span-2 py-6 space-y-8">
             <h3 className="text-xl font-semibold">Recent Donations</h3>
             {!loadingList && listDonate.map((v, k) => (
-                <div key={k} className="flex flex-col sm:flex-row space-x-4 space-y-8 sm:justify-between px-8 py-2 mx-auto bg-gray-300 rounded-sm shadow-lg sm:py-4 sm:flex sm:items-center sm:space-y-0 bg-opacity-60 dark:bg-opacity-30">
+                <div key={k} className="flex flex-col sm:flex-row space-x-4 space-y-8 sm:justify-between px-8 py-2 mx-auto bg-gray-300 dark:bg-gray-50 rounded-sm shadow-lg sm:py-4 sm:flex sm:items-center sm:space-y-0 bg-opacity-60 dark:bg-opacity-40">
                     <img className="block mx-auto h-14 rounded-full sm:mx-0 sm:shrink-0" src="/coin.webp" alt="AHA Token" />
                     <div className="text-center space-y-2 sm:text-left">
                         {/* <div className="flex flex-col sm:flex-row space-y-0.5 sm:space-y-0 space-x-0 sm:space-x-2 text-center justify-center">
@@ -90,7 +92,7 @@ const ListDonate: React.FC<ListDonateProps> = ({ listDonate, loadingList, tokenP
                         </div>
                     </div>
                     <div className="flex flex-col text-center sm:text-right pl-4 sm:space-y-2">
-                        <DonateIcon addClassName="w-14 h-12" />
+                        <DonateIcon addClassName="w-14 h-12" color={darkMode ? "#519e2e" : "#507C5C"} />
                     </div>
                 </div>
             ))}

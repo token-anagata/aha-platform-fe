@@ -5,12 +5,14 @@ import { Project } from "@/types/project";
 import { formatNumber } from "@/utils/number";
 import classNames from "classnames";
 import ImageWithFallback from "../Image/ImageFallback";
+import { useDarkMode } from "@/context/DarkModeContext";
 
 interface CardDonationProps {
     data: Project | null | undefined;
 }
 
 const CardDonation: React.FC<CardDonationProps> = ({ data }) => {
+    const { darkMode } = useDarkMode();
     const createMarkup = (html: string) => {
         return { __html: html };
     };
@@ -39,7 +41,7 @@ const CardDonation: React.FC<CardDonationProps> = ({ data }) => {
                     <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">{data.project_name}</p>
                     <p className="text-md text-gray-400">{data.project_category}</p>
                 </div>
-                <DonateIcon addClassName="w-14 h-12" />
+                <DonateIcon addClassName="w-14 h-12" color={darkMode ? "#519e2e" : "#507C5C"} />
             </div>
 
             <div className="shrink-0 mt-4 gap-4">

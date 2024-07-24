@@ -5,7 +5,6 @@ import { Address, Hash } from "viem";
 import { useBalance, useChainId, useSendTransaction, useSwitchChain, useWaitForTransactionReceipt } from "wagmi";
 import { ChainOpts } from "@/types/chain";
 import ChainSelectBox, { CHAIN_OPTS } from "./Select/ChainSelectBox";
-import SpinIcon from "@/assets/svg/SpinIcon";
 import classNames from "classnames";
 import { DECIMALS, REAL_DECIMALS } from "@/utils/wagmi";
 import { useMutation } from "@tanstack/react-query";
@@ -16,16 +15,17 @@ import { formatDate } from "@/utils/date";
 import { AHA_SYMBOL, USDT_SYMBOL } from "@/configurations/contract";
 import { BNB_RECEPIENT } from "@/configurations/common";
 import { donateToken } from "@/utils/wagmi/donation/writeContract";
+import ConnectButton from "../Buttons/ConnectButton";
+import SolanaButton from "../Buttons/SolanaButton";
 
 interface DonationProps {
     id: string;
     address: string | undefined;
     tokenPrice: BigInt;
     setRefetch: Dispatch<SetStateAction<boolean>>;
-    handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
 
-const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch, handleConnect }) => {
+const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch }) => {
     const [donation, setDonation] = useState<string>('')
     const [chain, setChain] = useState<ChainOpts>(CHAIN_OPTS[0])
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
@@ -88,7 +88,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
 
             return
         }
-        
+
         try {
             // loading button
             setLoadingButton(true)
@@ -163,9 +163,11 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
         e.preventDefault()
     };
 
-    const handleSwitchChain = async (chain: ChainOpts) => {
-        setChain(chain)
+    const handleSwitchChain = async (chainValue: ChainOpts) => {
+        setChain(chainValue)
     };
+
+    console.log(chain)
 
     return (
         <div className="flex flex-col space-y-5">
@@ -187,27 +189,35 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
             </div>
 
             <div className="relative">
-                <button
-                    className={classNames({
-                        'btn w-full block px-2 py-4 gap-x-2 text-xl text-center rounded-r-sm': true,
-                        //'bg-opacity-50 pointer-events-none': !saleActive,
-                        'flex justify-center': loadingButton
-                    })}
-                    disabled={loadingButton}
-                    onClick={address ? handleDonation : handleConnect}
-                >
-                    {
-                        loadingButton ? (
-                            <SpinIcon
-                                addClassName={classNames({
-                                    'w-8 h-8': true,
-                                    'animate-spin': loadingButton
-                                })}
-                            />
-                        )
-                            : (address ? "Donate" : "Connect")
-                    }
-                </button>
+                {
+                    chain.value === 'sol' && (
+                        <SolanaButton
+                            className={classNames({
+                                'btn w-full block px-2 py-4 gap-x-2 text-xl text-center rounded-r-sm': true,
+                                //'bg-opacity-50 pointer-events-none': !saleActive,
+                                'flex justify-center': loadingButton
+                            })}
+                            buttonText="Donate"
+                            loadingButton={loadingButton}
+                            handleClick={handleDonation}
+                        />
+                    )
+                }
+                {
+                    chain.value !== 'sol' && (
+                        <ConnectButton
+                            className={classNames({
+                                'btn w-full block px-2 py-4 gap-x-2 text-xl text-center rounded-r-sm': true,
+                                //'bg-opacity-50 pointer-events-none': !saleActive,
+                                'flex justify-center': loadingButton
+                            })}
+                            address={address}
+                            buttonText="Donate"
+                            loadingButton={loadingButton}
+                            handleClick={handleDonation}
+                        />
+                    )
+                }
             </div>
 
             {loadingTransaction && (<div className="relative">

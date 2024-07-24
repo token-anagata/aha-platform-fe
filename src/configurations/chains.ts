@@ -1,3 +1,4 @@
+import { solana, solanaDevnet, solanaTestnet } from "@web3modal/solana/chains";
 import { Transport, http } from "viem";
 import { Chain, bsc, bscTestnet, hardhat, mainnet, sepolia } from "wagmi/chains";
 
@@ -13,6 +14,16 @@ export function getNetworkEnviroment() : Chain[]{
         return [bsc, mainnet]
     }else{
         return [hardhat]
+    }
+}
+
+export function getSolanaNetworkEnviroment(){
+    if(ENV_NETWORK === 'testnet'){
+        return [solanaTestnet]
+    }else if(ENV_NETWORK === 'mainnet'){
+        return [solana]
+    }else{
+        return [solanaDevnet]
     }
 }
 
@@ -47,6 +58,14 @@ export function getEthChainNetwork(): Chain {
         return mainnet
     }else{
         return sepolia
+    }
+}
+
+export function getSolanaChainNetwork() {
+    if(ENV_NETWORK === 'mainnet'){
+        return solana
+    }else{
+        return solanaTestnet
     }
 }
 

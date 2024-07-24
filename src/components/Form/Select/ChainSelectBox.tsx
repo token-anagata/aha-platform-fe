@@ -6,12 +6,14 @@ import UsdtIcon from '@/assets/svg/UsdtIcon'
 import AhaIcon from '@/assets/svg/AhaIcon'
 import classNames from 'classnames'
 import { ChainOpts } from '@/types/chain'
-import { getBscChainNetwork, getEthChainNetwork } from '@/configurations/chains'
+import { getBscChainNetwork, getEthChainNetwork, getSolanaChainNetwork } from '@/configurations/chains'
 import { BNB_RECEPIENT, ETH_RECEPIENT } from '@/configurations/common'
 import Divider from '@/components/Borders/Divider'
+import SolanaIcon from '@/assets/svg/SolanaIcon'
 
 const bscChain = getBscChainNetwork()
 const ethChain = getEthChainNetwork()
+const solanaChain = getSolanaChainNetwork()
 
 export const CHAIN_OPTS: ChainOpts[] = [
   {
@@ -48,6 +50,15 @@ export const CHAIN_OPTS: ChainOpts[] = [
     recipient: ETH_RECEPIENT,
     explorer: ethChain.blockExplorers?.default.url,
     icon: <EthIcon addClassName='' />,
+    divider: true
+  },
+  {
+    id: solanaChain.chainId as string,
+    name: 'Solana',
+    value: "sol",
+    recipient: ETH_RECEPIENT,
+    explorer: solanaChain.explorerUrl,
+    icon: <SolanaIcon addClassName='' />,
     divider: false
   },
 ]
