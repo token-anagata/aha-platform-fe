@@ -17,6 +17,9 @@ import { BNB_RECEPIENT } from "@/configurations/common";
 import { donateToken } from "@/utils/wagmi/donation/writeContract";
 import ConnectButton from "../Buttons/ConnectButton";
 import SolanaButton from "../Buttons/SolanaButton";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { getSolanaExplorer, transferSolana } from "@/utils/solana";
+import { TransactionSignature } from "@solana/web3.js";
 
 interface DonationProps {
     id: string;
@@ -32,8 +35,11 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
     const { sendTransactionAsync } = useSendTransaction();
     const { data: balance } = useBalance({ address: address as Address });
     const { switchChainAsync } = useSwitchChain();
+    const { publicKey, sendTransaction: sendTransactionSolana } = useWallet();
+    const { connection } = useConnection();
     const chainId = useChainId()
     const [hash, setHash] = useState<Hash | undefined>(undefined)
+    const [trxSignature, setTrxSignature] = useState<TransactionSignature | undefined>(undefined)
     const { isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
         hash: hash,
     });
@@ -47,9 +53,9 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
     useEffect(() => {
         if (!isConfirmed) return
 
-        toast.success('Transfer was successfull')
+        toast.success(`Your donation has been successfully sent. Thank you very much, the help you have given means a lot to us and the world`);
         setLoadingButton(false)
-    }, [isConfirmed])
+    }, [isConfirmed, trxSignature])
 
     useEffect(() => {
         const donate = Number(donation.replace(/,/g, ''))
@@ -57,9 +63,9 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
         const rate = getRateCurrenciesByName(dataCurrencies as ResponseCurrencies, chain.value, formatTokenPrice)
         const usdRate = donate * rate;
 
-        if (hash) {
+        if (hash || trxSignature) {
             mutate({
-                donation_id: hash as string,
+                donation_id: (chain.value === 'sol' ? trxSignature : hash) as string,
                 donation_date: formatDate(),
                 project_id: id,
                 wallet_id: address as string,
@@ -69,15 +75,16 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                 conversion_value: usdRate,
                 status: 1,
             })
+
         }
-    }, [hash, dataCurrencies])
+    }, [hash, trxSignature, dataCurrencies])
 
     const handleDonation = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
 
         const donate = Number(donation.replace(/,/g, ''))
 
-        if (chainId !== chain.id) {
+        if (chainId !== chain.id && chain.value !== 'sol') {
             await switchChainAsync({ chainId: chain.id });
 
             return
@@ -112,6 +119,19 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
 
                 if (txHashAha) {
                     setHash(txHashAha)
+                }
+            } else if (chain.value === 'sol') {
+                if (!publicKey) {
+                    toast.error('Solana wallet not connected');
+                    return;
+                }
+
+                const signature = await transferSolana(publicKey, donate, connection, sendTransactionSolana)
+
+                if (signature) {
+                    setTrxSignature(signature)
+                    setLoadingButton(false)
+                    toast.success(`Your donation has been successfully sent. Thank you very much, the help you have given means a lot to us and the world`);
                 }
             }
 
@@ -226,6 +246,11 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
             {isConfirmed && (<div className="relative">
                 <p className="truncate text-center">
                     Tx Hash:  <a className="text-aha-green-light text-ellipsis" target="_blank" href={`${chain.explorer}/tx/${hash}`}>{hash}</a>
+                </p>
+            </div>)}
+            {trxSignature && (<div className="relative">
+                <p className="truncate text-center">
+                    Signature:  <a className="text-aha-green-light text-ellipsis" target="_blank" href={getSolanaExplorer(trxSignature)}>{trxSignature}</a>
                 </p>
             </div>)}
         </div>

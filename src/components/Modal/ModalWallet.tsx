@@ -3,6 +3,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useAccount } from '@/context/AccountContext';
 import ArrowRightIcon from '@/assets/svg/ArrowRightIcon';
+import SolanaIcon from '@/assets/svg/SolanaIcon';
+import { WalletName } from '@solana/wallet-adapter-base';
 
 interface ModalWalletProps {
     isOpen: boolean;
@@ -23,19 +25,19 @@ const ModalWallet: React.FC<ModalWalletProps> = ({ isOpen, onClose, }) => {
     }, [publicKey, connection]);
 
     useEffect(() => {
-        console.log(publicKey)
-        if(publicKey) setSolanaAddress(publicKey?.toBase58()!);
+        if (publicKey) setSolanaAddress(publicKey?.toBase58()!);
         onClose()
     }, [publicKey]);
 
-    const handleWalletSelect = async (walletName: any) => {
-        if (walletName) {
+    const handleWalletSelect = async (walletName: WalletName) => {
+        console.log(walletName)
+        //if (walletName) {
             try {
                 select(walletName);
             } catch (error) {
                 console.log("wallet connection err : ", error);
             }
-        }
+        //}
     };
 
     return (
@@ -54,7 +56,7 @@ const ModalWallet: React.FC<ModalWalletProps> = ({ isOpen, onClose, }) => {
                 </Transition.Child>
 
                 <div className="fixed inset-0 z-10 overflow-y-auto">
-                    <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div className="flex min-h-96 md:min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                         <Transition.Child
                             as={Fragment}
                             enter="ease-out duration-300"
@@ -64,11 +66,13 @@ const ModalWallet: React.FC<ModalWalletProps> = ({ isOpen, onClose, }) => {
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <Dialog.Panel className="scroll-smooth max-h-screen relative transform overflow-auto rounded-lg bg-white dark:bg-gray-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6">
+                            <Dialog.Panel className="scroll-smooth max-w-96 max-h-screen relative transform overflow-auto rounded-lg bg-white dark:bg-gray-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:p-6">
                                 <div>
-                                    <div className="mt-3 sm:mt-5">
-                                        <Dialog.Title as="h3" className="text-center text-lg leading-6 font-bold text-gray-900 dark:text-gray-200">
-                                            Solana Wallet
+                                    <div className="mt-2">
+                                        <Dialog.Title as="div" className="flex justify-center py-4 text-center text-lg m-auto w-32">
+                                            <div className="rounded-full border-2 border-gray-400 p-4">
+                                                <SolanaIcon addClassName="w-24 " />
+                                            </div>
                                         </Dialog.Title>
                                         <div className="divide-y divide-gray-100">
                                             {wallets.map((wallet) => (
@@ -76,18 +80,16 @@ const ModalWallet: React.FC<ModalWalletProps> = ({ isOpen, onClose, }) => {
                                                     key={wallet.adapter.name}
                                                     //onClick={() => select(wallet.adapter.name)}
                                                     onClick={() => handleWalletSelect(wallet.adapter.name)}
-                                                    className="flex justify-between gap-x-6 py-5 hover:bg-transparent w-full items-center border-1 border-gray-500"
+                                                    className="flex justify-between gap-x-6 py-2 px-2 rounded-md hover:bg-gray-300 w-full items-center border-1 border-gray-500"
                                                 >
                                                     <div className="flex">
                                                         <img
                                                             src={wallet.adapter.icon}
                                                             alt={wallet.adapter.name}
-                                                            height={30}
-                                                            width={30}
-                                                            className="mr-5 "
+                                                            className="mr-5 w-12"
                                                         />
                                                     </div>
-                                                    <div className="text-lg">
+                                                    <div className="grow font-semibold text-left text-lg self-start">
                                                         {wallet.adapter.name}
                                                     </div>
                                                     <div className='text-gray-600 text-xl'>

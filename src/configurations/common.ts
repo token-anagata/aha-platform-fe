@@ -8,3 +8,4 @@ export const BSC_API_URL = import.meta.env.VITE_BSC_API_URL as string;
 export const DEFAULT_ADDRESS = import.meta.env.VITE_DEFAULT_ADDRESS as string;
 export const BNB_RECEPIENT = import.meta.env.VITE_BNB_RECEPIENT as string;
 export const ETH_RECEPIENT = import.meta.env.VITE_ETH_RECEPIENT as string;
+export const SOL_RECEPIENT = import.meta.env.VITE_SOL_RECEPIENT as string;

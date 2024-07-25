@@ -6,7 +6,7 @@ import { MouseEvent } from "react";
 
 interface HeaderProps {
     address: string | undefined;
-    handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
+    handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ handleConnect, address }) => {

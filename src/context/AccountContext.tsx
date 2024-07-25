@@ -3,6 +3,7 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 interface AccountContextType {
   solanaAddress: string | null;
   setSolanaAddress: (solanaAddress: string) => void;
+  removeSolanaAddress: () => void;
 }
 
 const AccountContext = createContext<AccountContextType | undefined>(undefined);
@@ -17,6 +18,11 @@ const AccountProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     localStorage.setItem('solanaAddress', newAddress);
   };
 
+  const removeSolanaAddress = () => {
+    setSolanaAddressState(null);
+    localStorage.removeItem('solanaAddress');
+  };
+
   useEffect(() => {
     const storedAddress = localStorage.getItem('solanaAddress');
     if (storedAddress) {
@@ -25,7 +31,7 @@ const AccountProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, []);
 
   return (
-    <AccountContext.Provider value={{ solanaAddress, setSolanaAddress }}>
+    <AccountContext.Provider value={{ solanaAddress, setSolanaAddress, removeSolanaAddress }}>
       {children}
     </AccountContext.Provider>
   );

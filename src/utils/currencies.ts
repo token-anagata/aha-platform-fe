@@ -9,6 +9,8 @@ export const getRateCurrenciesByName = (currencies: ResponseCurrencies, name: st
         return currencies['binancecoin']['usd'];
     } else if ( name === 'usdt') {
         return currencies['tether']['usd'];
+    } else if ( name === 'sol') {
+        return currencies['solana']['usd'];
     } else {
         return ahaRate;
     }

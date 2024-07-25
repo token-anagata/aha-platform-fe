@@ -60,9 +60,9 @@ const ListDonate: React.FC<ListDonateProps> = ({ listDonate, loadingList, tokenP
         <section className="col-span-2 py-6 space-y-8">
             <h3 className="text-xl font-semibold">Recent Donations</h3>
             {!loadingList && listDonate.map((v, k) => (
-                <div key={k} className="flex flex-col sm:flex-row space-x-4 space-y-8 sm:justify-between px-8 py-2 mx-auto bg-gray-300 dark:bg-gray-50 rounded-sm shadow-lg sm:py-4 sm:flex sm:items-center sm:space-y-0 bg-opacity-60 dark:bg-opacity-40">
+                <div key={k} className="flex flex-col sm:flex-row space-x-4 space-y-8 items-center sm:justify-between px-8 py-2 mx-auto bg-gray-300 dark:bg-gray-50 rounded-sm shadow-lg sm:py-4 sm:flex sm:items-center sm:space-y-0 bg-opacity-60 dark:bg-opacity-40">
                     <img className="block mx-auto h-14 rounded-full sm:mx-0 sm:shrink-0" src="/coin.webp" alt="AHA Token" />
-                    <div className="text-center space-y-2 sm:text-left">
+                    <div className="text-center space-y-2 sm:text-left truncate max-w-72 md:max-w-full ">
                         {/* <div className="flex flex-col sm:flex-row space-y-0.5 sm:space-y-0 space-x-0 sm:space-x-2 text-center justify-center">
                             <p className="text-xl text-black dark:text-gray-200 font-semibold">Date</p>
                             <p className="text-xl text-black dark:text-gray-200 font-semibold">
@@ -73,7 +73,7 @@ const ListDonate: React.FC<ListDonateProps> = ({ listDonate, loadingList, tokenP
                             href={`${bscChain.blockExplorers?.default.url}/tx/${v.transactionHash}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="block px-4 py-1 text-md text-white text-ellipsis overflow-hidden font-semibold rounded-full bg-aha-green-light hover:text-white hover:bg-aha-green-dark hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
+                            className="block px-4 py-1 text-md text-white text-nowrap text-ellipsis font-semibold rounded-full bg-aha-green-light hover:text-white hover:bg-aha-green-dark hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
                         >
                             {v.transactionHash}
                         </a>
