@@ -20,6 +20,7 @@ import SolanaButton from "../Buttons/SolanaButton";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { getSolanaExplorer, transferSolana } from "@/utils/solana";
 import { TransactionSignature } from "@solana/web3.js";
+import { checkTransactionByHash } from "@/utils/ripple";
 
 interface DonationProps {
     id: string;
@@ -32,6 +33,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
     const [donation, setDonation] = useState<string>('')
     const [chain, setChain] = useState<ChainOpts>(CHAIN_OPTS[0])
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
+    const [xrpHash, setXrpHash] = useState<string>('');
     const { sendTransactionAsync } = useSendTransaction();
     const { data: balance } = useBalance({ address: address as Address });
     const { switchChainAsync } = useSwitchChain();
@@ -78,6 +80,28 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
 
         }
     }, [hash, trxSignature, dataCurrencies])
+
+    useEffect(() => {
+        // const donate = Number(donation.replace(/,/g, ''))
+        // const formatTokenPrice: number = Number(tokenPrice) / Number(DECIMALS)
+        // const rate = getRateCurrenciesByName(dataCurrencies as ResponseCurrencies, chain.value, formatTokenPrice)
+        // const usdRate = donate * rate;
+
+        if (xrpHash) {
+            mutate({
+                donation_id: (chain.value === 'sol' ? trxSignature : hash) as string,
+                donation_date: formatDate(),
+                project_id: id,
+                wallet_id: address as string,
+                donation_currency: chain.value,
+                donation_value: donate,
+                conversion_currency: "usd",
+                conversion_value: usdRate,
+                status: 1,
+            })
+
+        }
+    }, [xrpHash])
 
     const handleDonation = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
@@ -133,6 +157,14 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                     setLoadingButton(false)
                     toast.success(`Your donation has been successfully sent. Thank you very much, the help you have given means a lot to us and the world`);
                 }
+            } else if (chain.value === 'xrp') {
+                // setConfirmedXrp(xrpHash)
+                // const txHashXrp = await checkTransactionByHash(xrpHash);
+
+                // if(txHashXrp){
+                // }
+
+               
             }
 
             setRefetch(true)
@@ -208,6 +240,19 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                 />
             </div>
 
+            {chain.value === 'xrp' && <div className="relative">
+                <div className="absolute right-0 inset-y-0 flex items-center p-2 font-bold text-lg">
+                    <p className="uppercase">Tx Hash</p>
+                </div>
+                <input
+                    className="appearance-none border py-4 pl-4 text-xl bg-gray-100 dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 placeholder:dark:text-gray-200 focus:placeholder-gray-600 transition rounded-sm w-full outline-none"
+                    type="text"
+                    value={xrpHash}
+                    onChange={(e) => setXrpHash(e.target.value)}
+                    placeholder="66C77BC95E8..."
+                />
+            </div>}
+
             <div className="relative">
                 {
                     chain.value === 'sol' && (
@@ -251,6 +296,11 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
             {trxSignature && (<div className="relative">
                 <p className="truncate text-center">
                     Signature:  <a className="text-aha-green-light text-ellipsis" target="_blank" href={getSolanaExplorer(trxSignature)}>{trxSignature}</a>
+                </p>
+            </div>)}
+            {invoiceId && (<div className="relative">
+                <p className="truncate text-center">
+                    Invoice id has created <strong>{invoiceId}</strong>. Please check transaction in your wallet
                 </p>
             </div>)}
         </div>

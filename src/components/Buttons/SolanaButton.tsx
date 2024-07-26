@@ -66,7 +66,7 @@ const SolanaButton: React.FC<SolanaButtonProps> = ({ className, buttonText, load
                 }
             </button>
 
-            {
+            {/* {
                 ENV_NETWORK === 'testnet' && (
                     <button
                         className="btn w-full block px-2 py-4 gap-x-2 text-xl text-center rounded-r-sm bg-blue-600 mt-2"
@@ -75,7 +75,7 @@ const SolanaButton: React.FC<SolanaButtonProps> = ({ className, buttonText, load
                         Claim
                     </button>
                 )
-            }
+            } */}
 
             <div className="text-sm text-center py-4">
                 <p className="flex justify-center font-semibold truncate">

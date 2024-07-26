@@ -11,7 +11,8 @@ export interface ResponseCurrencies {
     [key: string]: UsdValue;
 }
 
-const currenciesUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,ethereum,tether,solana&vs_currencies=usd'
+const currencies = 'binancecoin,ethereum,tether,solana,ripple'
+const currenciesUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${currencies}&vs_currencies=usd`
 
 export const fetchCurrencies = async (): Promise<ResponseCurrencies> => {
     const response = await request.get(currenciesUrl);

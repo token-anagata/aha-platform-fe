@@ -7,9 +7,10 @@ import AhaIcon from '@/assets/svg/AhaIcon'
 import classNames from 'classnames'
 import { ChainOpts } from '@/types/chain'
 import { getBscChainNetwork, getEthChainNetwork, getSolanaChainNetwork } from '@/configurations/chains'
-import { BNB_RECEPIENT, ETH_RECEPIENT } from '@/configurations/common'
+import { BNB_RECEPIENT, ETH_RECEPIENT, SOL_RECEPIENT, XRP_RECEPIENT } from '@/configurations/common'
 import Divider from '@/components/Borders/Divider'
 import SolanaIcon from '@/assets/svg/SolanaIcon'
+import XrpIcon from '@/assets/svg/XrpIcon'
 
 const bscChain = getBscChainNetwork()
 const ethChain = getEthChainNetwork()
@@ -53,12 +54,21 @@ export const CHAIN_OPTS: ChainOpts[] = [
     divider: true
   },
   {
-    id: solanaChain.chainId as string,
+    id: 2000000,
     name: 'Solana',
     value: "sol",
-    recipient: ETH_RECEPIENT,
+    recipient: SOL_RECEPIENT,
     explorer: solanaChain.explorerUrl,
     icon: <SolanaIcon addClassName='' />,
+    divider: true
+  },
+  {
+    id: 2000000,
+    name: 'XRP',
+    value: "xrp",
+    recipient: XRP_RECEPIENT,
+    explorer: solanaChain.explorerUrl,
+    icon: <XrpIcon addClassName='' />,
     divider: false
   },
 ]

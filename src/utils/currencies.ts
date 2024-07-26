@@ -11,6 +11,8 @@ export const getRateCurrenciesByName = (currencies: ResponseCurrencies, name: st
         return currencies['tether']['usd'];
     } else if ( name === 'sol') {
         return currencies['solana']['usd'];
+    } else if ( name === 'xrp') {
+        return currencies['ripple']['usd'];
     } else {
         return ahaRate;
     }
