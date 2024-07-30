@@ -8,7 +8,6 @@ import ModalInfo from "@/components/Modal/ModalInfo";
 import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { useStore } from "@/context/StoreContext";
 import { useProject } from "@/hooks/useProject";
-import { getListDonate } from "@/utils/wagmi/donation/eventContract";
 import { getTokenPrice } from "@/utils/wagmi/ico/readContract";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,11 +15,11 @@ import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 const DonationPage: React.FC = () => {
-    const { address, connector } = useAccount();
+    const { address } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false);
     const { gasInfoDonation, setGasInfoDonation } = useStore();
     const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
-    const [listDonate, setListDonate] = useState<any[]>([]);
+    //const [listDonate, setListDonate] = useState<any[]>([]);
     const [loadingList, setLoadingList] = useState<boolean>(true);
     const { id } = useParams();
     const { data: dataProject, isError } = useProject(id as string)
@@ -28,18 +27,16 @@ const DonationPage: React.FC = () => {
 
     const closeModal = () => setGasInfoDonation(false);
 
-    console.log(connector)
-
     useEffect(() => {
         if (isError || dataProject === null) navigate('/not-found');
     }, [dataProject, isError])
+   
 
     useEffect(() => {
         (async () => {
             const price = await getTokenPrice(address || DEFAULT_ADDRESS as Address) as BigInt;
-            const list = await getListDonate(dataProject?.project_id as string);
+            //const list = await getListDonate(dataProject?.project_id as string);
 
-            setListDonate(list);
             setTokenPrice(price)
             setRefetch(false)
             setLoadingList(false)
@@ -84,9 +81,7 @@ const DonationPage: React.FC = () => {
 
                 {/** List donate */}
                 <ListDonate
-                    id={dataProject?.project_id as string}
-                    tokenPrice={tokenPrice}
-                    listDonate={listDonate}
+                    id={dataProject?.slug as string}
                     loadingList={loadingList}
                 />
             </div>

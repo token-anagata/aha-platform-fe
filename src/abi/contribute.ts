@@ -24,10 +24,10 @@ export const ABI_CONTRIBUTE_CONTRACT = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
-                "internalType": "uint256",
+                "indexed": true,
+                "internalType": "string",
                 "name": "projectId",
-                "type": "uint256"
+                "type": "string"
             },
             {
                 "indexed": false,
@@ -43,31 +43,6 @@ export const ABI_CONTRIBUTE_CONTRACT = [
             }
         ],
         "name": "AllocateLeverages",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "projectId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "Claim",
         "type": "event"
     },
     {
@@ -93,10 +68,10 @@ export const ABI_CONTRIBUTE_CONTRACT = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "projectId",
-                "type": "uint256"
+                "indexed": true,
+                "internalType": "string",
+                "name": "id",
+                "type": "string"
             },
             {
                 "indexed": false,
@@ -136,10 +111,10 @@ export const ABI_CONTRIBUTE_CONTRACT = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "projectId",
-                "type": "uint256"
+                "indexed": true,
+                "internalType": "string",
+                "name": "id",
+                "type": "string"
             }
         ],
         "name": "ProjectUpdated",
@@ -155,10 +130,10 @@ export const ABI_CONTRIBUTE_CONTRACT = [
                 "type": "address"
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
+                "indexed": true,
+                "internalType": "string",
                 "name": "projectId",
-                "type": "uint256"
+                "type": "string"
             },
             {
                 "indexed": false,
@@ -184,24 +159,11 @@ export const ABI_CONTRIBUTE_CONTRACT = [
         "type": "event"
     },
     {
-        "inputs": [],
-        "name": "_projectCounter",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
-                "internalType": "uint256",
+                "internalType": "string",
                 "name": "_projectId",
-                "type": "uint256"
+                "type": "string"
             }
         ],
         "name": "allocate",
@@ -225,9 +187,9 @@ export const ABI_CONTRIBUTE_CONTRACT = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
+                "internalType": "string",
                 "name": "_projectId",
-                "type": "uint256"
+                "type": "string"
             },
             {
                 "internalType": "enum ContributeContract.STATUS",
@@ -243,18 +205,10 @@ export const ABI_CONTRIBUTE_CONTRACT = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "_projectId",
-                "type": "uint256"
-            }
-        ],
-        "name": "claim",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
+                "internalType": "string",
+                "name": "_id",
+                "type": "string"
+            },
             {
                 "internalType": "uint256",
                 "name": "_duration",
@@ -294,9 +248,9 @@ export const ABI_CONTRIBUTE_CONTRACT = [
                 "type": "address"
             },
             {
-                "internalType": "uint256",
+                "internalType": "string",
                 "name": "_projectId",
-                "type": "uint256"
+                "type": "string"
             }
         ],
         "name": "getBalance",
@@ -318,9 +272,9 @@ export const ABI_CONTRIBUTE_CONTRACT = [
                 "type": "address"
             },
             {
-                "internalType": "uint256",
+                "internalType": "string",
                 "name": "_projectId",
-                "type": "uint256"
+                "type": "string"
             }
         ],
         "name": "getCalculateReward",
@@ -342,9 +296,9 @@ export const ABI_CONTRIBUTE_CONTRACT = [
                 "type": "address"
             },
             {
-                "internalType": "uint256",
+                "internalType": "string",
                 "name": "_projectId",
-                "type": "uint256"
+                "type": "string"
             }
         ],
         "name": "getCurrentReward",
@@ -361,14 +315,63 @@ export const ABI_CONTRIBUTE_CONTRACT = [
     {
         "inputs": [
             {
+                "internalType": "string",
+                "name": "_projectId",
+                "type": "string"
+            }
+        ],
+        "name": "getProject",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "id",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "duration",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "rewardRate",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "minAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "maxAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "isExists",
+                "type": "bool"
+            },
+            {
+                "internalType": "enum ContributeContract.STATUS",
+                "name": "status",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "_address",
                 "type": "address"
             },
             {
-                "internalType": "uint256",
+                "internalType": "string",
                 "name": "_projectId",
-                "type": "uint256"
+                "type": "string"
             }
         ],
         "name": "getRemainingDuration",
@@ -390,9 +393,9 @@ export const ABI_CONTRIBUTE_CONTRACT = [
                 "type": "address"
             },
             {
-                "internalType": "uint256",
+                "internalType": "string",
                 "name": "_projectId",
-                "type": "uint256"
+                "type": "string"
             }
         ],
         "name": "getRewarPerDay",
@@ -441,9 +444,9 @@ export const ABI_CONTRIBUTE_CONTRACT = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
+                "internalType": "string",
                 "name": "_projectId",
-                "type": "uint256"
+                "type": "string"
             }
         ],
         "name": "getTotalProjectAmount",
@@ -473,9 +476,9 @@ export const ABI_CONTRIBUTE_CONTRACT = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
+                "internalType": "string",
                 "name": "_projectId",
-                "type": "uint256"
+                "type": "string"
             },
             {
                 "internalType": "uint256",

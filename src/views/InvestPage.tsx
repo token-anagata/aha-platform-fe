@@ -11,7 +11,7 @@ import { useStore } from "@/context/StoreContext";
 import { useProject } from "@/hooks/useProject";
 import { OpenParams } from "@/types/account";
 import { formattedBalance } from "@/utils/wagmi";
-import { getTokenPrice } from "@/utils/wagmi/ico/readContract";
+import { getProject } from "@/utils/wagmi/contribute/readContract";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,12 +22,13 @@ const bscChain = getBscChainNetwork()
 
 const InvestPage: React.FC = () => {
     const { open } = useWeb3Modal();
-    const { address, connector, isConnected, status } = useAccount();
+    const { address, isConnected, status } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false);
     const { gasInfoInvest, setGasInfoInvest } = useStore();
-    const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
+    //const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
     const [ahaBalance, setAhaBalance] = useState<number>(0)
     const [usdtBalance, setUsdtBalance] = useState<number>(0)
+    const [project, setProject] = useState<number[]>([])
     const { id } = useParams();
     const { data: dataProject, isError } = useProject(id as string)
     const { switchChainAsync } = useSwitchChain();
@@ -45,9 +46,15 @@ const InvestPage: React.FC = () => {
         }
     };
 
-    console.log(connector)
-
     useEffect(() => {
+        (async () => {
+            if (dataProject !== null && dataProject !== undefined){   
+                const data = await getProject(address || DEFAULT_ADDRESS as Address, dataProject?.project_id as string);
+    
+                setProject(data as number[])
+            } 
+        })()
+        
         if (isError || dataProject === null) navigate('/not-found');
     }, [dataProject, isError])
 
@@ -59,17 +66,15 @@ const InvestPage: React.FC = () => {
         })()
     }, [status])
 
-    useEffect(() => {
-        if (chainId !== bscChain.id) return
-        (async () => {
-            const price = await getTokenPrice(address || DEFAULT_ADDRESS as Address) as BigInt;
+    // useEffect(() => {
+    //     if (chainId !== bscChain.id) return
+    //     (async () => {
+    //         const price = await getTokenPrice(address || DEFAULT_ADDRESS as Address) as BigInt;
 
-            setTokenPrice(price)
-            setRefetch(false)
-        })()
-    }, [address, refetch])
-
-
+    //         setTokenPrice(price)
+    //         setRefetch(false)
+    //     })()
+    // }, [address, refetch])
 
     useEffect(() => {
         if (chainId !== bscChain.id) return
@@ -82,7 +87,6 @@ const InvestPage: React.FC = () => {
         })()
     }, [isConnected, refetch])
 
-
     return (
         <Layout type="default">
             <div className="flex flex-col sm:flex-row justify-between gap-4">
@@ -93,13 +97,13 @@ const InvestPage: React.FC = () => {
                 </section>
                 <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
                     <BaseBalance page="invest" usdt={usdtBalance} aha={ahaBalance} />
-                    <Invest
+                    {project.length && <Invest
                         id={dataProject?.project_id as string}
-                        tokenPrice={tokenPrice}
                         address={address}
+                        project={project}
                         handleConnect={handleConnect}
                         setRefetch={setRefetch}
-                    />
+                    />}
 
                     <ModalInfo
                         isOpen={gasInfoInvest}

@@ -4,8 +4,7 @@ import { MouseEvent, useState } from "react";
 import ModalWallet from "../Modal/ModalWallet";
 import { useAccount } from "@/context/AccountContext";
 import LogoutIcon from "@/assets/svg/LogoutIcon";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { ENV_NETWORK } from "@/configurations/chains";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 interface SolanaButtonProps {
     className: string;
@@ -18,7 +17,6 @@ const SolanaButton: React.FC<SolanaButtonProps> = ({ className, buttonText, load
     const [modalSolana, setModalSolana] = useState<boolean>(false)
     const { removeSolanaAddress } = useAccount()
     const { publicKey, disconnect } = useWallet()
-    const { connection } = useConnection();
 
     const handleConnect = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         console.log(e)
@@ -31,19 +29,19 @@ const SolanaButton: React.FC<SolanaButtonProps> = ({ className, buttonText, load
         removeSolanaAddress();
     }
 
-    const requestAirdrop = async () => {
-        if (!publicKey) {
-            console.log('Wallet not connected');
-            return;
-        }
+    // const requestAirdrop = async () => {
+    //     if (!publicKey) {
+    //         console.log('Wallet not connected');
+    //         return;
+    //     }
 
-        try {
-            const airdropSignature = await connection.requestAirdrop(publicKey, 2e9); // 2 SOL
-            await connection.confirmTransaction(airdropSignature, 'confirmed');
-        } catch (error) {
-            console.error('Airdrop failed', error);
-        }
-    };
+    //     try {
+    //         const airdropSignature = await connection.requestAirdrop(publicKey, 2e9); // 2 SOL
+    //         await connection.confirmTransaction(airdropSignature, 'confirmed');
+    //     } catch (error) {
+    //         console.error('Airdrop failed', error);
+    //     }
+    // };
 
     const handleCloseModalSolana = () => setModalSolana(false)
 

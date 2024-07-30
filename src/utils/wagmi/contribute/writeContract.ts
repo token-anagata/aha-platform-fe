@@ -1,12 +1,13 @@
 import { writeContract } from "@wagmi/core";
 import { config } from "@/configurations/wagmi";
-import { DECIMALS, REAL_DECIMALS, getTransactionConfirmed } from "..";
+import { DECIMALS, PERCENTAGE_DECIMALS, REAL_DECIMALS, getTransactionConfirmed } from "..";
 import { Address } from "viem";
 import { INVEST_CONTRACT_ADDRESS, USDT_CONTRACT_ADDRESS } from "@/configurations/contract";
 import { ABI_CONTRIBUTE_CONTRACT } from "@/abi/contribute";
 import { ABI_USDT_CONTRACT } from "@/abi/usdt";
 
 export interface ProjectData {
+    id: string;
     duration: number | string;
     reward: number | string;
     minAmount: number | string;
@@ -39,7 +40,7 @@ export async function queuesUp(address: Address, amount: number, projectId: stri
             address: INVEST_CONTRACT_ADDRESS as Address,
             functionName: 'queuesUp',
             args: [
-                BigInt(1),
+                projectId,
                 BigInt(amount * 10 ** REAL_DECIMALS)
             ],
             account: address
@@ -58,8 +59,9 @@ export async function createProject(address: Address, data: ProjectData) {
         address: INVEST_CONTRACT_ADDRESS as Address,
         functionName: 'createProject',
         args: [
+            data.id,
             BigInt(data.duration),
-            BigInt(data.reward) * DECIMALS,
+            BigInt(data.reward) * PERCENTAGE_DECIMALS,
             BigInt(data.minAmount) * DECIMALS,
             BigInt(data.maxAmount) * DECIMALS,
             data.status,

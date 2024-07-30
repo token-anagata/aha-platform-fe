@@ -1,6 +1,12 @@
 import { ENV_NETWORK } from '@/configurations/chains';
 //import { XRP_RECEPIENT } from '@/configurations/common';
-import { Client } from 'xrpl';
+import { BaseTransaction, Client } from 'xrpl';
+
+interface Transaction extends BaseTransaction{
+  Destination?: string;
+  DeliverMax?: string;
+}
+export const XRP_DECIMALS = 10e5
 
 const NETWORK = ENV_NETWORK === 'testnet' ? 'wss://s.altnet.rippletest.net:51233' : 'wss://s1.ripple.com';
 
@@ -14,15 +20,13 @@ export const disconnect = async () => {
   await client.disconnect();
 };
 
-export const checkTransactionByHash = async (txHash: string) => {
-    try {
-      const txDetails = await client.request({
-        command: 'tx',
-        transaction: txHash
-      });
-      return txDetails.result;
-    } catch (error) {
-      console.error('Error checking transaction by hash:', error);
-      return { error: 'Error checking transaction by hash' };
-    }
-  };
+export const checkTransactionByHash = async (txHash: string) : Promise<Transaction> => {
+  await connect()
+  const txDetails = await client.request({
+    command: 'tx',
+    transaction: txHash
+  });
+
+  return txDetails.result.tx_json;
+
+};

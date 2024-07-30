@@ -13,14 +13,16 @@ import { ResponseCurrencies, useCurrencies } from "@/hooks/useCurrencies";
 import { getRateCurrenciesByName } from "@/utils/currencies";
 import { formatDate } from "@/utils/date";
 import { AHA_SYMBOL, USDT_SYMBOL } from "@/configurations/contract";
-import { BNB_RECEPIENT } from "@/configurations/common";
+import { BNB_RECEPIENT, XRP_RECEPIENT } from "@/configurations/common";
 import { donateToken } from "@/utils/wagmi/donation/writeContract";
 import ConnectButton from "../Buttons/ConnectButton";
 import SolanaButton from "../Buttons/SolanaButton";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { getSolanaExplorer, transferSolana } from "@/utils/solana";
 import { TransactionSignature } from "@solana/web3.js";
-import { checkTransactionByHash } from "@/utils/ripple";
+import { XRP_DECIMALS, checkTransactionByHash } from "@/utils/ripple";
+import CopyIcon from "@/assets/svg/CopyIcon";
+import { copyToClipboard } from "@/utils/copyToClipboard";
 
 interface DonationProps {
     id: string;
@@ -34,6 +36,8 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
     const [chain, setChain] = useState<ChainOpts>(CHAIN_OPTS[0])
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
     const [xrpHash, setXrpHash] = useState<string>('');
+    const [confirmedXrp, setConfirmedXrp] = useState<boolean>(false);
+    const [tooltipVisible, setTooltipVisible] = useState<boolean>(false);
     const { sendTransactionAsync } = useSendTransaction();
     const { data: balance } = useBalance({ address: address as Address });
     const { switchChainAsync } = useSwitchChain();
@@ -50,6 +54,9 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
         mutationFn: (data: DonationType) => {
             return usePostDonation(data)
         },
+        onSuccess: () => {
+            setLoadingButton(false)
+        }
     });
 
     useEffect(() => {
@@ -60,14 +67,13 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
     }, [isConfirmed, trxSignature])
 
     useEffect(() => {
-        const donate = Number(donation.replace(/,/g, ''))
-        const formatTokenPrice: number = Number(tokenPrice) / Number(DECIMALS)
-        const rate = getRateCurrenciesByName(dataCurrencies as ResponseCurrencies, chain.value, formatTokenPrice)
-        const usdRate = donate * rate;
-
-        if (hash || trxSignature) {
-            mutate({
-                donation_id: (chain.value === 'sol' ? trxSignature : hash) as string,
+        (async () => {
+            const donate = Number(donation.replace(/,/g, ''))
+            const formatTokenPrice: number = Number(tokenPrice) / Number(DECIMALS)
+            const rate = getRateCurrenciesByName(dataCurrencies as ResponseCurrencies, chain.value, formatTokenPrice)
+            const usdRate = donate * rate;
+            const data: DonationType = {
+                donation_id: '',
                 donation_date: formatDate(),
                 project_id: id,
                 wallet_id: address as string,
@@ -76,48 +82,52 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                 conversion_currency: "usd",
                 conversion_value: usdRate,
                 status: 1,
-            })
+            }
 
-        }
-    }, [hash, trxSignature, dataCurrencies])
+            if (hash || trxSignature || confirmedXrp) {
+                if (chain.value === 'sol') {
+                    data.donation_id = trxSignature as string
+                } else if (chain.value === 'xrp') {
+                    const dataXrp = await checkTransactionByHash(xrpHash)
+                
+                    if(dataXrp && dataXrp?.Destination !== XRP_RECEPIENT){
+                        toast.warning('Tx hash not valid')
+                        return
+                    }
+                    const rateXrp = getRateCurrenciesByName(dataCurrencies as ResponseCurrencies, chain.value, formatTokenPrice)
+                    const xrpValue = Number(dataXrp.DeliverMax) / XRP_DECIMALS
+                    const usdRateXrp = Number(xrpValue) * rateXrp;
 
-    useEffect(() => {
-        // const donate = Number(donation.replace(/,/g, ''))
-        // const formatTokenPrice: number = Number(tokenPrice) / Number(DECIMALS)
-        // const rate = getRateCurrenciesByName(dataCurrencies as ResponseCurrencies, chain.value, formatTokenPrice)
-        // const usdRate = donate * rate;
-
-        if (xrpHash) {
-            mutate({
-                donation_id: (chain.value === 'sol' ? trxSignature : hash) as string,
-                donation_date: formatDate(),
-                project_id: id,
-                wallet_id: address as string,
-                donation_currency: chain.value,
-                donation_value: donate,
-                conversion_currency: "usd",
-                conversion_value: usdRate,
-                status: 1,
-            })
-
-        }
-    }, [xrpHash])
+                    data.donation_id = xrpHash
+                    data.wallet_id =  dataXrp.Account as string
+                    data.donation_value = xrpValue
+                    data.conversion_value = usdRateXrp
+                } else {
+                    data.donation_id = hash as string
+                }
+                
+                mutate(data)
+            }
+        })()
+    }, [hash, trxSignature, confirmedXrp, dataCurrencies])
 
     const handleDonation = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
 
         const donate = Number(donation.replace(/,/g, ''))
-
-        if (chainId !== chain.id && chain.value !== 'sol') {
-            await switchChainAsync({ chainId: chain.id });
-
-            return
-        }
-
-        if (Number(balance?.value) < 10) {
-            toast.warning(`Your BNB is lower than 10 wei please top up your BNB because gas fee is required to pay for the computational effort needed to process the transaction`)
-
-            return
+     
+        if(!['sol', 'xrp'].includes(chain.value)){
+            if (chainId !== chain.id) {
+                await switchChainAsync({ chainId: chain.id });
+                
+                return
+            }
+            
+            if (Number(balance?.value) < 10 ) {
+                toast.warning(`Your BNB is lower than 10 wei please top up your BNB because gas fee is required to pay for the computational effort needed to process the transaction`)
+                
+                return
+            }
         }
 
         try {
@@ -158,13 +168,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                     toast.success(`Your donation has been successfully sent. Thank you very much, the help you have given means a lot to us and the world`);
                 }
             } else if (chain.value === 'xrp') {
-                // setConfirmedXrp(xrpHash)
-                // const txHashXrp = await checkTransactionByHash(xrpHash);
-
-                // if(txHashXrp){
-                // }
-
-               
+                setConfirmedXrp(true)
             }
 
             setRefetch(true)
@@ -219,14 +223,21 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
         setChain(chainValue)
     };
 
-    console.log(chain)
+    const handleCopyClick = () => {
+        copyToClipboard(XRP_RECEPIENT);
+
+        setTooltipVisible(true);
+        setTimeout(() => {
+            setTooltipVisible(false);
+        }, 2000);
+    };
 
     return (
         <div className="flex flex-col space-y-5">
             <div className="relative">
                 <ChainSelectBox onChange={handleSwitchChain} />
             </div>
-            <div className="relative">
+            {chain.value !== 'xrp' && <div className="relative">
                 <div className="absolute right-0 inset-y-0 flex items-center p-2 font-bold text-lg">
                     <p className="uppercase">{chain.value}</p>&nbsp; {chain.icon}
                 </div>
@@ -238,11 +249,30 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                     onChange={handleChangeDonation}
                     onKeyDown={handleKeyDownAmount}
                 />
-            </div>
+            </div>}
+
+            {chain.value === 'xrp' && <div className="relative">
+                <ol className="list-decimal px-5">
+                    <li>Open Your wallet</li>
+                    <li>
+                        <div className="flex">
+                            Transfer to&nbsp;<strong>{XRP_RECEPIENT}</strong>
+                            <CopyIcon addClassName="web-inspector-hide-shortcut" onClick={handleCopyClick} />
+                            {tooltipVisible && (
+                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-sm rounded">
+                                    Copied!
+                                </div>
+                            )}
+                        </div>
+                    </li>
+                    <li>Copy transaction hash and enter it into the input below</li>
+                    <li>Donate</li>
+                </ol>
+            </div>}
 
             {chain.value === 'xrp' && <div className="relative">
                 <div className="absolute right-0 inset-y-0 flex items-center p-2 font-bold text-lg">
-                    <p className="uppercase">Tx Hash</p>
+                    <p className="uppercase">{chain.value}</p>&nbsp; {chain.icon}
                 </div>
                 <input
                     className="appearance-none border py-4 pl-4 text-xl bg-gray-100 dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 placeholder:dark:text-gray-200 focus:placeholder-gray-600 transition rounded-sm w-full outline-none"
@@ -296,11 +326,6 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
             {trxSignature && (<div className="relative">
                 <p className="truncate text-center">
                     Signature:  <a className="text-aha-green-light text-ellipsis" target="_blank" href={getSolanaExplorer(trxSignature)}>{trxSignature}</a>
-                </p>
-            </div>)}
-            {invoiceId && (<div className="relative">
-                <p className="truncate text-center">
-                    Invoice id has created <strong>{invoiceId}</strong>. Please check transaction in your wallet
                 </p>
             </div>)}
         </div>

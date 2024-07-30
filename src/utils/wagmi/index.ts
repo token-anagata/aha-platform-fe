@@ -12,6 +12,7 @@ import { ABI_USDT_CONTRACT } from '@/abi/usdt';
 /* global BigInt */
 export const CURRENT_EVENT = process.env.REACT_APP_EVENTID
 export const DECIMALS = BigInt(1_000_000_000_000_000_000);
+export const PERCENTAGE_DECIMALS = BigInt(10_000_000_000_000_000);
 export const REAL_DECIMALS = 18
 export const SUCCESS_STATUS = "success"
 

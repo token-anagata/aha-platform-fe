@@ -69,6 +69,22 @@ export function getSolanaChainNetwork() {
     }
 }
 
+export function getBscTransportChain(): Record<Chain['id'], Transport>{
+    if(ENV_NETWORK === 'testnet'){
+        return {
+            [bscTestnet.id]: http()
+        }
+    }else if(ENV_NETWORK === 'mainnet'){
+        return {
+            [bsc.id]: http()
+        }
+    }else{
+        return {
+            [hardhat.id]: http(),
+        }
+    }
+}
+
 export function getPublicRpc() : string{
     if(ENV_NETWORK === 'amoy'){
         return 'https://rpc-amoy.polygon.technology'

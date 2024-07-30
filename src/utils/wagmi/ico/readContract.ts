@@ -1,11 +1,12 @@
 import { ABI_ICO_CONTRACT } from '@/abi/ico';
 import { ICO_CONTRACT_ADDRESS } from '@/configurations/contract';
 import { readContract } from '@wagmi/core'
-import { config } from '@/configurations/wagmi';
+import { configBsc } from '@/configurations/wagmi';
 import { Address } from 'viem';
+import { publicClient } from '@/configurations/viem';
 
 export async function getTokenPrice(address: Address) {
-    const result = await readContract(config, {
+    const result = await publicClient.readContract({
         abi: ABI_ICO_CONTRACT,
         address: ICO_CONTRACT_ADDRESS as Address,
         account: address as Address,
@@ -17,7 +18,7 @@ export async function getTokenPrice(address: Address) {
 }
 
 export async function getMinAmount(address: Address) {
-    const result = await readContract(config, {
+    const result = await readContract(configBsc, {
         abi: ABI_ICO_CONTRACT,
         address: ICO_CONTRACT_ADDRESS as Address,
         account: address as Address,
@@ -29,7 +30,7 @@ export async function getMinAmount(address: Address) {
 }
 
 export async function getMaxAmount(address: Address) {
-    const result = await readContract(config, {
+    const result = await readContract(configBsc, {
         abi: ABI_ICO_CONTRACT,
         address: ICO_CONTRACT_ADDRESS as Address,
         account: address as Address,
@@ -41,7 +42,7 @@ export async function getMaxAmount(address: Address) {
 }
 
 export async function getTokenSold(address: Address) {
-    const result = await readContract(config, {
+    const result = await readContract(configBsc, {
         abi: ABI_ICO_CONTRACT,
         address: ICO_CONTRACT_ADDRESS as Address,
         account: address as Address,

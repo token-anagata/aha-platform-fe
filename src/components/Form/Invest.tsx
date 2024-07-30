@@ -5,10 +5,9 @@ import { Address, Hash } from "viem";
 import { useBalance, useWaitForTransactionReceipt } from "wagmi";
 import SpinIcon from "@/assets/svg/SpinIcon";
 import classNames from "classnames";
-import { DECIMALS } from "@/utils/wagmi";
+import { DECIMALS, PERCENTAGE_DECIMALS } from "@/utils/wagmi";
 import { useMutation } from "@tanstack/react-query";
-import { ResponseCurrencies, useCurrencies } from "@/hooks/useCurrencies";
-import { getRateCurrenciesByName } from "@/utils/currencies";
+import { useCurrencies } from "@/hooks/useCurrencies";
 import { formatDate, getCurrentDate, getEstimatedMonths } from "@/utils/date";
 import { InvestType, usePostInvest } from "@/hooks/useInvest";
 import UsdtIcon from "@/assets/svg/UsdtIcon";
@@ -18,14 +17,14 @@ import { queuesUp } from "@/utils/wagmi/contribute/writeContract";
 interface InvestProps {
     id: string;
     address: string | undefined;
-    tokenPrice: BigInt;
+    project: number[];
     setRefetch: Dispatch<SetStateAction<boolean>>;
     handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
 
 const bscChain = getBscChainNetwork()
 
-const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, handleConnect }) => {
+const Invest: React.FC<InvestProps> = ({ id, address, project, setRefetch, handleConnect }) => {
     const [amount, setAmount] = useState<string>('')
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
     const { data: balance } = useBalance({ address: address as Address });
@@ -39,39 +38,43 @@ const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, ha
             return usePostInvest(data)
         },
     });
+    const [projectId, duration, reward, minAmount] = project
 
     useEffect(() => {
         if (!isConfirmed) return
 
         toast.success('Transfer was successfull')
         setLoadingButton(false)
+        setRefetch(true)
     }, [isConfirmed])
 
     useEffect(() => {
         const invest = Number(amount.replace(/,/g, ''))
-        const formatTokenPrice: number = Number(tokenPrice) / Number(DECIMALS)
-        const rate = getRateCurrenciesByName(dataCurrencies as ResponseCurrencies, 'usdt', formatTokenPrice)
-        const usdRate = invest * rate;
 
         if (hash) {
             mutate({
-                donation_id: hash as string,
-                donation_date: formatDate(),
+                investment_id: hash as string,
+                investment_date: formatDate(),
                 project_id: id,
                 wallet_id: address as string,
-                donation_currency: 'usdt',
-                donation_value: invest,
-                conversion_currency: "usd",
-                conversion_value: usdRate,
+                investment_currency: 'usdt',
+                investment_value: invest,
                 status: 1,
             })
+            
         }
     }, [hash, dataCurrencies])
-
+    
     const handleInvest = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
 
         const invest = Number(amount.replace(/,/g, ''))
+
+        if (invest < Number(BigInt(minAmount) / DECIMALS)) {
+            toast.warning(`Amount is below minimum stake`)
+
+            return
+        }
 
         if (Number(balance?.value) < 10) {
             toast.warning(`Your BNB is lower than 10 wei please top up your BNB because gas fee is required to pay for the computational effort needed to process the transaction`)
@@ -82,7 +85,7 @@ const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, ha
         try {
             // loading button
             setLoadingButton(true)
-            const txtHash = await queuesUp(address as Address, invest, id)
+            const txtHash = await queuesUp(address as Address, invest, projectId.toString())
 
             if (txtHash) {
                 setHash(txtHash)
@@ -188,15 +191,15 @@ const Invest: React.FC<InvestProps> = ({ id, address, tokenPrice, setRefetch, ha
                 <h4 className="font-bold text-xl px-2 py-2">Summary</h4>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>Date</div>
-                    <div className="text-right">{getCurrentDate()} - {getEstimatedMonths(30)}</div>
+                    <div className="text-right">{getCurrentDate()} - {getEstimatedMonths(Number(duration))}</div>
                 </div>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>Estimated earn</div>
-                    <div className="text-right">{formatNumber((Number(amount.replace(/,/g, '')) * 0.2  || 0), 0, 2)}</div>
+                    <div className="text-right">{formatNumber((Number(amount.replace(/,/g, '')) * (Number(BigInt(reward) / PERCENTAGE_DECIMALS) / 100)  || 0), 0, 2)}</div>
                 </div>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>APR</div>
-                    <div className="text-right">{20}%</div>
+                    <div className="text-right">{Number(BigInt(reward) / PERCENTAGE_DECIMALS)}%</div>
                 </div>
                 <p className="text-md self-end">Not working?&nbsp;
                     <a href="https://t.me/AnagataGlobal" className="font-bold text-aha-green-lighter hover:text-[#22c55e]">

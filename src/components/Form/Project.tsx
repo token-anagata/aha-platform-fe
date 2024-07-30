@@ -5,8 +5,6 @@ import { Address, Hash } from "viem";
 import { useBalance, useWaitForTransactionReceipt } from "wagmi";
 import SpinIcon from "@/assets/svg/SpinIcon";
 import classNames from "classnames";
-// import { useMutation } from "@tanstack/react-query";
-//import { ProjectType, usePostProject } from "@/hooks/useProject";
 import { getBscChainNetwork } from "@/configurations/chains";
 import { type Project } from "@/types/project";
 import { INVEST_STATUS } from "@/utils/contract";
@@ -36,12 +34,6 @@ const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handle
     const { isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
         hash: hash,
     });
-    // const { mutate } = useMutation({
-    //     mutationFn: (data: ProjectType) => {
-    //         return usePostProject(data)
-    //     },
-    // });
-    console.log(id)
 
     useEffect(() => {
         if (!isConfirmed) return
@@ -49,24 +41,6 @@ const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handle
         toast.success('Transfer was successfull')
         setLoadingButton(false)
     }, [isConfirmed])
-
-    useEffect(() => {
-        // const donate = Number(donation.replace(/,/g, ''))
-
-        // if (hash) {
-        //     mutate({
-        //         donation_id: hash as string,
-        //         donation_date: formatDate(),
-        //         project_id: id,
-        //         wallet_id: address as string,
-        //         donation_currency: chain.value,
-        //         donation_value: donate,
-        //         conversion_currency: "usd",
-        //         conversion_value: usdRate,
-        //         status: 1,
-        //     })
-        // }
-    }, [hash])
 
     const handleProject = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
@@ -86,6 +60,7 @@ const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handle
             // loading button
             setLoadingButton(true)
             const txHash = await createProject(address as Address, {
+                id,
                 duration,
                 reward,
                 minAmount: Number(minAmount.replace(/,/g, '')),
@@ -99,7 +74,7 @@ const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handle
 
             setRefetch(true)
         } catch (e) {
-            console.log('transfer', e)
+            console.log('project', e)
             setLoadingButton(false)
             toast.error("There was an error during create a project, try again in moment")
         }
