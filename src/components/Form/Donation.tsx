@@ -87,6 +87,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
             if (hash || trxSignature || confirmedXrp) {
                 if (chain.value === 'sol') {
                     data.donation_id = trxSignature as string
+                    data.donation_currency = 'solana'
                 } else if (chain.value === 'xrp') {
                     const dataXrp = await checkTransactionByHash(xrpHash)
                 
@@ -107,6 +108,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                 }
                 
                 mutate(data)
+                setRefetch(true)
             }
         })()
     }, [hash, trxSignature, confirmedXrp, dataCurrencies])
@@ -171,7 +173,6 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                 setConfirmedXrp(true)
             }
 
-            setRefetch(true)
         } catch (e) {
             console.log('transfer', e)
             setLoadingButton(false)

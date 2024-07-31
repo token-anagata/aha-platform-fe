@@ -65,7 +65,7 @@ const CardDonation: React.FC<CardDonationProps> = ({ data }) => {
 
                 <div className="flex w-full h-4 bg-gray-200 rounded-full overflow-hidden dark:bg-neutral-400" >
                     <div
-                        className="flex flex-col justify-center rounded-full overflow-hidden bg-aha-green-lighter text-xs text-white text-center whitespace-nowrap transition duration-500"
+                        className="flex flex-col justify-center rounded-full overflow-hidden bg-yellow-400 text-xs text-white text-center whitespace-nowrap transition duration-500"
                         style={{ width: `${Math.ceil(Number(data.total_conversion_value) / Number(data.target_donation) * 100)}%` }}
                     >
                     </div>

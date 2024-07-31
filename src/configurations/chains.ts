@@ -69,6 +69,15 @@ export function getSolanaChainNetwork() {
     }
 }
 
+export function getRipleChainNetwork() {
+    if(ENV_NETWORK === 'mainnet'){
+        return 'https://livenet.xrpl.org/transactions'
+    }else{
+        return 'https://testnet.xrpl.org/transactions'
+    }
+}
+
+
 export function getBscTransportChain(): Record<Chain['id'], Transport>{
     if(ENV_NETWORK === 'testnet'){
         return {
