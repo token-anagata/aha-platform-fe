@@ -79,8 +79,8 @@ const InvestPage: React.FC = () => {
     useEffect(() => {
         if (chainId !== bscChain.id) return
         (async () => {
-            const aha = await formattedBalance(address || DEFAULT_ADDRESS as Address, AHA_SYMBOL);
-            const usdt = await formattedBalance(address || DEFAULT_ADDRESS as Address, USDT_SYMBOL);
+            const aha = await formattedBalance(address as Address, AHA_SYMBOL);
+            const usdt = await formattedBalance(address as Address, USDT_SYMBOL);
 
             setAhaBalance(aha)
             setUsdtBalance(usdt)
@@ -97,13 +97,13 @@ const InvestPage: React.FC = () => {
                 </section>
                 <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
                     <BaseBalance page="invest" usdt={usdtBalance} aha={ahaBalance} />
-                    {project.length && <Invest
+                    <Invest
                         id={dataProject?.project_id as string}
                         address={address}
                         project={project}
                         handleConnect={handleConnect}
                         setRefetch={setRefetch}
-                    />}
+                    />
 
                     <ModalInfo
                         isOpen={gasInfoInvest}

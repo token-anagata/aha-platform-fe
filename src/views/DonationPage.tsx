@@ -61,7 +61,7 @@ const DonationPage: React.FC = () => {
                     />
                     <Divider />
 
-                    <div className="flex flex-col justify-center">
+                    <div className="flex flex-col justify-center py-6">
                         <p className="text-lg font-semibold text-center">Make the World a Better Place</p>
                         <p className="font-normal text-sm text-center"> We very apreciate every piece your give</p>
                     </div>

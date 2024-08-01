@@ -234,7 +234,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
     };
 
     return (
-        <div className="flex flex-col space-y-5">
+        <div className="flex flex-col space-y-6 py-6">
             <div className="relative">
                 <ChainSelectBox onChange={handleSwitchChain} />
             </div>

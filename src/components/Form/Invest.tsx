@@ -139,6 +139,14 @@ const Invest: React.FC<InvestProps> = ({ id, address, project, setRefetch, handl
         e.preventDefault()
     };
 
+    if (project.length === 0) {
+        return (
+            <div className="flex justify-center items-center h-full">
+                <SpinIcon addClassName="animate-spin -ml-1 mr-3 text-white h-20 w-20 text-aha-green-light" />
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col space-y-8">
             <div className="relative">

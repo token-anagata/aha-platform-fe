@@ -1,6 +1,6 @@
 import ContributeIcon from "@/assets/svg/ContributeIcon";
 import SpinIcon from "@/assets/svg/SpinIcon";
-import { WEBBASE_URL } from "@/configurations/common";
+import { API_URL } from "@/configurations/common";
 import { Project } from "@/types/project";
 import { formatNumber } from "@/utils/number";
 import classNames from "classnames";
@@ -25,9 +25,9 @@ const CardInvest: React.FC<CardInvestProps> = ({ data }) => {
 
     return (
         <div className="flex flex-col justify-between items-stretch min-h-full">
-            <div className="max-h-80 aspect-h-2 aspect-w-2 overflow-hidden rounded-lg bg-gray-100 sm:col-span-4 lg:col-span-5">
+            <div className="max-h-[360px] aspect-h-2 aspect-w-2 overflow-hidden rounded-lg bg-gray-100 sm:col-span-4 lg:col-span-5">
                 <ImageWithFallback
-                    src={`${WEBBASE_URL}/storage/${data?.images[0].image}`}
+                    src={`${API_URL}/storage/${data?.images[0].image}`}
                     fallbackSrc="/image-couldnt-load.webp"
                     alt={data.project_name}
                     className="w-full h-full"
