@@ -8,7 +8,3 @@ export const publicClient = createPublicClient({
   transport: http(publicRpc), 
 }) 
  
-export const walletClient = createWalletClient({
-  chain: getBscChainNetwork(), 
-  transport: custom(window.ethereum!)
-})

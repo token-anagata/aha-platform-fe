@@ -26,7 +26,6 @@ export const configWagmiBsc = () => {
     chains: [env] as [Chain, ...Chain[]],
     projectId: PROJECT_ID,
     metadata: metadata,
-    enableInjected: true,
     transports: transport,
   });
 }

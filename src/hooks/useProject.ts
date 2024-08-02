@@ -21,8 +21,6 @@ export interface ProjectType {
     status: number;
 }
 
-
-
 export const fetchProject = async (id: string): Promise<Project | null> => {
     const response: ProjectResponse = await request.get(`/api/projects/donation/${id}`);
 
