@@ -1,4 +1,4 @@
-import { createPublicClient, createWalletClient, custom, http } from 'viem'
+import { createPublicClient, http } from 'viem'
 import { getBscChainNetwork, getPublicRpc } from './chains'
 
 const publicRpc = getPublicRpc()
