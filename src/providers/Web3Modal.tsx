@@ -13,7 +13,7 @@ createWeb3Modal({
     projectId: import.meta.env.VITE_WEB3MODAL_PROJECT_ID as string,
     enableAnalytics: true,
     enableOnramp: true,
-    allowUnsupportedChain: true,
+    allowUnsupportedChain: false,
     tokens: {
         [bscTestnet.id]: {
           address: AHA_CONTRACT_ADDRESS,

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import SpinIcon from "../../assets/svg/SpinIcon";
 import { formatNumber } from "../../utils/number";
 import { useListDonation } from "@/hooks/useDonation";
@@ -13,18 +13,19 @@ import BnbIcon from "@/assets/svg/BnbIcon";
 
 interface ListDonateProps {
     id: string;
-    loadingList: boolean;
+    refetch: boolean;
+    setRefetch: Dispatch<SetStateAction<boolean>>;
 }
 
-const ListDonate: React.FC<ListDonateProps> = ({ id, loadingList }) => {
-    const { data: listDonate, refetch } = useListDonation(id as string)
+const ListDonate: React.FC<ListDonateProps> = ({ id, refetch }) => {
+    const { data: listDonate, refetch: refetchList } = useListDonation(id as string)
     const { darkMode } = useDarkMode()
 
     useEffect(() => {
-        refetch()
-    }, [loadingList])
+        refetchList()
+    }, [refetch])
 
-    if (loadingList || listDonate == null) {
+    if (refetch || listDonate == null) {
         return (
             <div className="col-span-2 place-self-center">
                 <SpinIcon addClassName="animate-spin w-24 h-24 text-aha-green-light" />
@@ -35,7 +36,7 @@ const ListDonate: React.FC<ListDonateProps> = ({ id, loadingList }) => {
     return (
         <section className="col-span-2 py-6 space-y-8">
             <h3 className="text-xl font-semibold">Recent Donations</h3>
-            {!loadingList && listDonate.map((v, k) => (
+            {!refetch && listDonate.map((v, k) => (
                 <div key={k} className="flex flex-col sm:flex-row space-x-4 space-y-8 items-center sm:justify-between px-8 py-2 mx-auto bg-gray-300 dark:bg-gray-50 rounded-sm shadow-lg sm:py-4 sm:flex sm:items-center sm:space-y-0 bg-opacity-60 dark:bg-opacity-40">
                     <img className="block mx-auto h-16 rounded-full sm:mx-0 sm:shrink-0" src="/coin.webp" alt="AHA Token" />
                     <div className="text-center space-y-2 sm:text-left truncate max-w-72 md:max-w-full">

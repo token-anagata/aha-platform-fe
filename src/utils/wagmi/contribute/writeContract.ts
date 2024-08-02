@@ -33,7 +33,7 @@ export async function approve(address: Address, amount: number) {
 export async function queuesUp(address: Address, amount: number, projectId: string) {
     const hashApprove = await approve(address, amount);
     const confirmed = await getTransactionConfirmed(hashApprove);
-    console.log(projectId)
+
     if (confirmed) {
         const result = await writeContract(config, {
             abi: ABI_CONTRIBUTE_CONTRACT,

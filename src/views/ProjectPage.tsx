@@ -3,7 +3,7 @@ import Project from "@/components/Form/Project";
 import Layout from "@/components/Layout/Main";
 import { getBscChainNetwork } from "@/configurations/chains";
 import { DEFAULT_ADDRESS } from "@/configurations/common";
-import { useProject } from "@/hooks/useProject";
+import { useProjectInvest } from "@/hooks/useProject";
 import { OpenParams } from "@/types/account";
 import { formattedMainBalance } from "@/utils/wagmi";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
@@ -20,7 +20,7 @@ const ProjectPage: React.FC = () => {
     const [refetch, setRefetch] = useState<boolean>(false)
     const [bnbBalance, setBnbBalance] = useState<number>(0)
     const { id } = useParams();
-    const { data: dataProject, isError } = useProject(id as string)
+    const { data: dataProject, isError } = useProjectInvest(id as string)
     const { switchChainAsync } = useSwitchChain();
     const chainId = useChainId()
     const navigate = useNavigate()

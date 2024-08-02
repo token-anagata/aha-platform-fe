@@ -39,6 +39,25 @@ export const useProject = (id: string) => {
     });
 };
 
+
+export const fecthProjectInvest = async (id: string): Promise<Project | null> => {
+    const response: ProjectResponse = await request.get(`/api/projects/investment/${id}`);
+
+    if (response.project) {
+        return response.project as Project;
+    }
+
+    return null
+};
+
+export const useProjectInvest = (id: string) => {
+    return useQuery({
+        queryKey: ['invest'],
+        queryFn: () => fecthProjectInvest(id),
+        staleTime: 2000000,
+    });
+};
+
 export const usePostProject = async (params: ProjectType) => {
     const response = await request.post('/api/donation', params);
 

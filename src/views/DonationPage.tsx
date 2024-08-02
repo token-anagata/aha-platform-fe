@@ -1,3 +1,4 @@
+import SpinIcon from "@/assets/svg/SpinIcon";
 import Divider from "@/components/Borders/Divider";
 import ListDonate from "@/components/Box/ListDonate";
 import CardDonation from "@/components/Card/CardDonation";
@@ -20,7 +21,6 @@ const DonationPage: React.FC = () => {
     const { gasInfoDonation, setGasInfoDonation } = useStore();
     const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
     //const [listDonate, setListDonate] = useState<any[]>([]);
-    const [loadingList, setLoadingList] = useState<boolean>(true);
     const { id } = useParams();
     const { data: dataProject, isError } = useProject(id as string)
     const navigate = useNavigate()
@@ -39,9 +39,16 @@ const DonationPage: React.FC = () => {
 
             setTokenPrice(price)
             setRefetch(false)
-            setLoadingList(false)
         })()
     }, [address, refetch])
+
+    if (dataProject == null || dataProject == undefined) {
+        return (
+            <div className="flex min-h-screen justify-center items-center place-self-center">
+                <SpinIcon addClassName="animate-spin w-32 h-32 text-aha-green-light" />
+            </div>
+        );
+    }
 
     return (
         <Layout type="default">
@@ -82,7 +89,8 @@ const DonationPage: React.FC = () => {
                 {/** List donate */}
                 <ListDonate
                     id={dataProject?.slug as string}
-                    loadingList={loadingList}
+                    refetch={refetch}
+                    setRefetch={setRefetch}
                 />
             </div>
         </Layout>

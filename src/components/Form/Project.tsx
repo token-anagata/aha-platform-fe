@@ -23,7 +23,7 @@ const bscChain = getBscChainNetwork()
 
 const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handleConnect }) => {
     const [duration, setDuration] = useState<number | string>('')
-    const [reward, setReward] = useState<number | string>('')
+    const [reward, setReward] = useState<number | string>(Number(data?.apy_investor || 0) || '')
     const [minAmount, setMinAmount] = useState<string>('')
     const [maxAmount, setMaxAmount] = useState<string>('')
     const [status, setStatus] = useState<number>(0)

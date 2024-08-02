@@ -5,26 +5,25 @@ import { Address, Hash } from "viem";
 import { useBalance, useWaitForTransactionReceipt } from "wagmi";
 import SpinIcon from "@/assets/svg/SpinIcon";
 import classNames from "classnames";
-import { DECIMALS, PERCENTAGE_DECIMALS } from "@/utils/wagmi";
 import { useMutation } from "@tanstack/react-query";
-import { useCurrencies } from "@/hooks/useCurrencies";
-import { formatDate, getCurrentDate, getEstimatedMonths } from "@/utils/date";
+import { formatDate, getCurrentDate } from "@/utils/date";
 import { InvestType, usePostInvest } from "@/hooks/useInvest";
 import UsdtIcon from "@/assets/svg/UsdtIcon";
 import { getBscChainNetwork } from "@/configurations/chains";
 import { queuesUp } from "@/utils/wagmi/contribute/writeContract";
+import { Project } from "@/types/project";
 
 interface InvestProps {
     id: string;
     address: string | undefined;
-    project: number[];
+    data: Project;
     setRefetch: Dispatch<SetStateAction<boolean>>;
     handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
 
 const bscChain = getBscChainNetwork()
 
-const Invest: React.FC<InvestProps> = ({ id, address, project, setRefetch, handleConnect }) => {
+const Invest: React.FC<InvestProps> = ({ id, address, data, setRefetch, handleConnect }) => {
     const [amount, setAmount] = useState<string>('')
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
     const { data: balance } = useBalance({ address: address as Address });
@@ -32,13 +31,11 @@ const Invest: React.FC<InvestProps> = ({ id, address, project, setRefetch, handl
     const { isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
         hash: hash,
     });
-    const { data: dataCurrencies } = useCurrencies()
     const { mutate } = useMutation({
         mutationFn: (data: InvestType) => {
             return usePostInvest(data)
         },
     });
-    const [projectId, duration, reward, minAmount] = project
 
     useEffect(() => {
         if (!isConfirmed) return
@@ -63,18 +60,18 @@ const Invest: React.FC<InvestProps> = ({ id, address, project, setRefetch, handl
             })
             
         }
-    }, [hash, dataCurrencies])
+    }, [hash])
     
     const handleInvest = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
 
         const invest = Number(amount.replace(/,/g, ''))
 
-        if (invest < Number(BigInt(minAmount) / DECIMALS)) {
-            toast.warning(`Amount is below minimum stake`)
+        // if (invest < Number(BigInt(minAmount) / DECIMALS)) {
+        //     toast.warning(`Amount is below minimum stake`)
 
-            return
-        }
+        //     return
+        // }
 
         if (Number(balance?.value) < 10) {
             toast.warning(`Your BNB is lower than 10 wei please top up your BNB because gas fee is required to pay for the computational effort needed to process the transaction`)
@@ -85,7 +82,7 @@ const Invest: React.FC<InvestProps> = ({ id, address, project, setRefetch, handl
         try {
             // loading button
             setLoadingButton(true)
-            const txtHash = await queuesUp(address as Address, invest, projectId.toString())
+            const txtHash = await queuesUp(address as Address, invest, data.project_id)
 
             if (txtHash) {
                 setHash(txtHash)
@@ -138,8 +135,8 @@ const Invest: React.FC<InvestProps> = ({ id, address, project, setRefetch, handl
         }
         e.preventDefault()
     };
-
-    if (project.length === 0) {
+ 
+    if (data === null || data === undefined) {
         return (
             <div className="flex justify-center items-center h-full">
                 <SpinIcon addClassName="animate-spin -ml-1 mr-3 text-white h-20 w-20 text-aha-green-light" />
@@ -199,15 +196,15 @@ const Invest: React.FC<InvestProps> = ({ id, address, project, setRefetch, handl
                 <h4 className="font-bold text-xl px-2 py-2">Summary</h4>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>Date</div>
-                    <div className="text-right">{getCurrentDate()} - {getEstimatedMonths(Number(duration))}</div>
+                    <div className="text-right">{getCurrentDate()} - {data.end_date}</div>
                 </div>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>Estimated earn</div>
-                    <div className="text-right">{formatNumber((Number(amount.replace(/,/g, '')) * (Number(BigInt(reward) / PERCENTAGE_DECIMALS) / 100)  || 0), 0, 2)}</div>
+                    <div className="text-right">{formatNumber((Number(amount.replace(/,/g, '')) * (Number(data.apy_investor) / 100)  || 0), 0, 2)}</div>
                 </div>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>APR</div>
-                    <div className="text-right">{Number(BigInt(reward) / PERCENTAGE_DECIMALS)}%</div>
+                    <div className="text-right">{Number(data.apy_investor)}%</div>
                 </div>
                 <p className="text-md self-end">Not working?&nbsp;
                     <a href="https://t.me/AnagataGlobal" className="font-bold text-aha-green-lighter hover:text-[#22c55e]">

@@ -28,7 +28,9 @@ export const fetchListDonation = async (id: string): Promise<DonationType[] | nu
     const response: DonationResponse = await request.get(`/api/donation/${id}`);
 
     if (response.data) {
-        return response.data as DonationType[];
+        const reverse: DonationType[] = response.data.reverse()
+        
+        return reverse;
     }
 
     return null

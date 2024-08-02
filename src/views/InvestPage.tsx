@@ -1,17 +1,17 @@
+import SpinIcon from "@/assets/svg/SpinIcon";
 import BaseBalance from "@/components/Box/BaseBalance";
+import ListInvest from "@/components/Box/ListInvest";
 import CardInvest from "@/components/Card/CardInvest";
 import GasFee from "@/components/Description/GasFee";
 import Invest from "@/components/Form/Invest";
 import Layout from "@/components/Layout/Main";
 import ModalInfo from "@/components/Modal/ModalInfo";
 import { getBscChainNetwork } from "@/configurations/chains";
-import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { AHA_SYMBOL, USDT_SYMBOL } from "@/configurations/contract";
 import { useStore } from "@/context/StoreContext";
-import { useProject } from "@/hooks/useProject";
+import { useProjectInvest } from "@/hooks/useProject";
 import { OpenParams } from "@/types/account";
 import { formattedBalance } from "@/utils/wagmi";
-import { getProject } from "@/utils/wagmi/contribute/readContract";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import React, { MouseEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,9 +28,8 @@ const InvestPage: React.FC = () => {
     //const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
     const [ahaBalance, setAhaBalance] = useState<number>(0)
     const [usdtBalance, setUsdtBalance] = useState<number>(0)
-    const [project, setProject] = useState<number[]>([])
     const { id } = useParams();
-    const { data: dataProject, isError } = useProject(id as string)
+    const { data: dataProject, isError } = useProjectInvest(id as string)
     const { switchChainAsync } = useSwitchChain();
     const chainId = useChainId()
     const navigate = useNavigate()
@@ -47,24 +46,16 @@ const InvestPage: React.FC = () => {
     };
 
     useEffect(() => {
-        (async () => {
-            if (dataProject !== null && dataProject !== undefined){   
-                const data = await getProject(address || DEFAULT_ADDRESS as Address, dataProject?.project_id as string);
-    
-                setProject(data as number[])
-            } 
-        })()
-        
         if (isError || dataProject === null) navigate('/not-found');
     }, [dataProject, isError])
-
+    
     useEffect(() => {
         (async () => {
             if (chainId !== bscChain.id) {
                 await switchChainAsync({ chainId: bscChain.id });
-            } 
+            }
         })()
-    }, [status])
+    }, [chainId, status, isConnected])
 
     // useEffect(() => {
     //     if (chainId !== bscChain.id) return
@@ -86,6 +77,14 @@ const InvestPage: React.FC = () => {
             setUsdtBalance(usdt)
         })()
     }, [isConnected, refetch])
+    
+    if (dataProject == null || dataProject == undefined) {
+        return (
+            <div className="flex min-h-screen justify-center items-center place-self-center">
+                <SpinIcon addClassName="animate-spin w-32 h-32 text-aha-green-light" />
+            </div>
+        );
+    }
 
     return (
         <Layout type="default">
@@ -100,7 +99,7 @@ const InvestPage: React.FC = () => {
                     <Invest
                         id={dataProject?.project_id as string}
                         address={address}
-                        project={project}
+                        data={dataProject}
                         handleConnect={handleConnect}
                         setRefetch={setRefetch}
                     />
@@ -114,6 +113,17 @@ const InvestPage: React.FC = () => {
                         <GasFee />
                     </ModalInfo>
                 </section>
+            </div>
+            <div className="grid max-w-screen-xl mt-8">
+
+                {/** List donate */}
+                <ListInvest
+                    id={dataProject?.slug as string}
+                    address={address}
+                    data={dataProject}
+                    refetch={refetch}
+                    setRefetch={setRefetch}
+                />
             </div>
         </Layout>
     );
