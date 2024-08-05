@@ -12,18 +12,18 @@ import UsdtIcon from "@/assets/svg/UsdtIcon";
 import { getBscChainNetwork } from "@/configurations/chains";
 import { queuesUp } from "@/utils/wagmi/contribute/writeContract";
 import { Project } from "@/types/project";
+import ConnectButton from "../Buttons/ConnectButton";
 
 interface InvestProps {
     id: string;
     address: string | undefined;
     data: Project;
     setRefetch: Dispatch<SetStateAction<boolean>>;
-    handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
 
 const bscChain = getBscChainNetwork()
 
-const Invest: React.FC<InvestProps> = ({ id, address, data, setRefetch, handleConnect }) => {
+const Invest: React.FC<InvestProps> = ({ id, address, data, setRefetch }) => {
     const [amount, setAmount] = useState<string>('')
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
     const { data: balance } = useBalance({ address: address as Address });
@@ -58,10 +58,10 @@ const Invest: React.FC<InvestProps> = ({ id, address, data, setRefetch, handleCo
                 investment_value: invest,
                 status: 1,
             })
-            
+
         }
     }, [hash])
-    
+
     const handleInvest = async (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
 
@@ -135,7 +135,7 @@ const Invest: React.FC<InvestProps> = ({ id, address, data, setRefetch, handleCo
         }
         e.preventDefault()
     };
- 
+
     if (data === null || data === undefined) {
         return (
             <div className="flex justify-center items-center h-full">
@@ -161,27 +161,17 @@ const Invest: React.FC<InvestProps> = ({ id, address, data, setRefetch, handleCo
             </div>
 
             <div className="relative">
-                <button
+                <ConnectButton
                     className={classNames({
                         'btn w-full block px-2 py-4 gap-x-2 text-xl text-center rounded-r-sm': true,
                         //'bg-opacity-50 pointer-events-none': !saleActive,
                         'flex justify-center': loadingButton
                     })}
-                    disabled={loadingButton}
-                    onClick={address ? handleInvest : handleConnect}
-                >
-                    {
-                        loadingButton ? (
-                            <SpinIcon
-                                addClassName={classNames({
-                                    'w-8 h-8': true,
-                                    'animate-spin': loadingButton
-                                })}
-                            />
-                        )
-                            : (address ? "Contribute" : "Connect")
-                    }
-                </button>
+                    address={address}
+                    buttonText="Contribute"
+                    loadingButton={loadingButton}
+                    handleClick={handleInvest}
+                />
             </div>
 
             {loadingTransaction && (<div className="relative">
@@ -200,7 +190,7 @@ const Invest: React.FC<InvestProps> = ({ id, address, data, setRefetch, handleCo
                 </div>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>Estimated earn</div>
-                    <div className="text-right">{formatNumber((Number(amount.replace(/,/g, '')) * (Number(data.apy_investor) / 100)  || 0), 0, 2)}</div>
+                    <div className="text-right">{formatNumber((Number(amount.replace(/,/g, '')) * (Number(data.apy_investor) / 100) || 0), 0, 2)}</div>
                 </div>
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>APR</div>

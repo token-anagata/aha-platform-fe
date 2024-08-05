@@ -16,11 +16,10 @@ import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 const DonationPage: React.FC = () => {
-    const { address } = useAccount();
+    const { address, isConnected } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false);
     const { gasInfoDonation, setGasInfoDonation } = useStore();
     const [tokenPrice, setTokenPrice] = useState<BigInt>(BigInt(0));
-    //const [listDonate, setListDonate] = useState<any[]>([]);
     const { id } = useParams();
     const { data: dataProject, isError } = useProject(id as string)
     const navigate = useNavigate()
@@ -30,12 +29,17 @@ const DonationPage: React.FC = () => {
     useEffect(() => {
         if (isError || dataProject === null) navigate('/not-found');
     }, [dataProject, isError])
-   
+
+    useEffect(() => {
+        (async () => {
+            setRefetch(true)
+        })()
+    }, [isConnected])
+
 
     useEffect(() => {
         (async () => {
             const price = await getTokenPrice(address || DEFAULT_ADDRESS as Address) as BigInt;
-            //const list = await getListDonate(dataProject?.project_id as string);
 
             setTokenPrice(price)
             setRefetch(false)

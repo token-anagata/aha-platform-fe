@@ -10,10 +10,8 @@ import { getBscChainNetwork } from "@/configurations/chains";
 import { AHA_SYMBOL, USDT_SYMBOL } from "@/configurations/contract";
 import { useStore } from "@/context/StoreContext";
 import { useProjectInvest } from "@/hooks/useProject";
-import { OpenParams } from "@/types/account";
 import { formattedBalance } from "@/utils/wagmi";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Address } from "viem";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
@@ -21,7 +19,6 @@ import { useAccount, useChainId, useSwitchChain } from "wagmi";
 const bscChain = getBscChainNetwork()
 
 const InvestPage: React.FC = () => {
-    const { open } = useWeb3Modal();
     const { address, isConnected, status } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false);
     const { gasInfoInvest, setGasInfoInvest } = useStore();
@@ -36,15 +33,6 @@ const InvestPage: React.FC = () => {
 
     const closeModal = () => setGasInfoInvest(false);
 
-    const handleConnect = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {
-        e.preventDefault();
-        if (address) {
-            open({ view: "Account" } as OpenParams);
-        } else {
-            open({ view: "Connect" } as OpenParams);
-        }
-    };
-
     useEffect(() => {
         if (isError || dataProject === null) navigate('/not-found');
     }, [dataProject, isError])
@@ -54,6 +42,7 @@ const InvestPage: React.FC = () => {
             if (chainId !== bscChain.id) {
                 await switchChainAsync({ chainId: bscChain.id });
             }
+            setRefetch(true)
         })()
     }, [chainId, status, isConnected])
 
@@ -100,7 +89,6 @@ const InvestPage: React.FC = () => {
                         id={dataProject?.project_id as string}
                         address={address}
                         data={dataProject}
-                        handleConnect={handleConnect}
                         setRefetch={setRefetch}
                     />
 

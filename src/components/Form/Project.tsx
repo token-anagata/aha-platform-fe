@@ -3,30 +3,26 @@ import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react
 import { toast } from "react-toastify";
 import { Address, Hash } from "viem";
 import { useBalance, useWaitForTransactionReceipt } from "wagmi";
-import SpinIcon from "@/assets/svg/SpinIcon";
 import classNames from "classnames";
 import { getBscChainNetwork } from "@/configurations/chains";
 import { type Project } from "@/types/project";
-import { INVEST_STATUS } from "@/utils/contract";
 import { createProject } from "@/utils/wagmi/contribute/writeContract";
-
+import ConnectButton from "../Buttons/ConnectButton";
 
 interface ProjectProps {
     id: string;
     address: string | undefined;
     data: Project | null | undefined;
     setRefetch: Dispatch<SetStateAction<boolean>>;
-    handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
 
 const bscChain = getBscChainNetwork()
 
-const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handleConnect }) => {
+const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch }) => {
     const [duration, setDuration] = useState<number | string>('')
     const [reward, setReward] = useState<number | string>(Number(data?.apy_investor || 0) || '')
     const [minAmount, setMinAmount] = useState<string>('')
     const [maxAmount, setMaxAmount] = useState<string>('')
-    const [status, setStatus] = useState<number>(0)
     const [error, setError] = useState<boolean | null>(null);
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
     const { data: balance } = useBalance({ address: address as Address });
@@ -65,7 +61,7 @@ const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handle
                 reward,
                 minAmount: Number(minAmount.replace(/,/g, '')),
                 maxAmount: Number(maxAmount.replace(/,/g, '')),
-                status
+                status: 1
             })
 
             if (txHash) {
@@ -139,13 +135,6 @@ const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handle
             return
         }
         e.preventDefault()
-    };
-
-    const handleChangeStatus = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = event.target.value;
-        if (value) {
-            setStatus(Number(value))
-        }
     };
 
     return (
@@ -234,45 +223,18 @@ const Project: React.FC<ProjectProps> = ({ id, address, data, setRefetch, handle
                 </p>
             </div>
 
-            <div className="col-span-full">
-                <label htmlFor="status" className="block text-sm font-medium leading-6">Status</label>
-                <div className="mt-2">
-                    <select
-                        className="appearance-none border py-4 pl-4 text-xl bg-gray-100 dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 placeholder:dark:text-gray-200 focus:placeholder-gray-600 transition rounded-sm w-full outline-none"
-                        value={status}
-                        onChange={handleChangeStatus}
-                    >
-                        {INVEST_STATUS.map((value, key) => (
-                            <option key={key} value={key}>{value}</option>
-                        ))}
-                    </select>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-red-500"></p>
-            </div>
-
-
             <div className="relative">
-                <button
+                <ConnectButton
                     className={classNames({
                         'btn w-full block px-2 py-4 gap-x-2 text-xl text-center rounded-r-sm': true,
                         //'bg-opacity-50 pointer-events-none': !saleActive,
                         'flex justify-center': loadingButton
                     })}
-                    disabled={loadingButton}
-                    onClick={address ? handleProject : handleConnect}
-                >
-                    {
-                        loadingButton ? (
-                            <SpinIcon
-                                addClassName={classNames({
-                                    'w-8 h-8': true,
-                                    'animate-spin': loadingButton
-                                })}
-                            />
-                        )
-                            : (address ? "Post" : "Connect")
-                    }
-                </button>
+                    address={address}
+                    buttonText="Post"
+                    loadingButton={loadingButton}
+                    handleClick={handleProject}
+                />
             </div>
 
             {loadingTransaction && (<div className="relative">

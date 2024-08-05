@@ -30,6 +30,25 @@ export async function approve(address: Address, amount: number) {
     return result
 }
 
+export async function createProject(address: Address, data: ProjectData) {
+    const result = await writeContract(config, {
+        abi: ABI_CONTRIBUTE_CONTRACT,
+        address: INVEST_CONTRACT_ADDRESS as Address,
+        functionName: 'createProject',
+        args: [
+            data.id,
+            BigInt(data.duration),
+            BigInt(data.reward) * PERCENTAGE_DECIMALS,
+            BigInt(data.minAmount) * DECIMALS,
+            BigInt(data.maxAmount) * DECIMALS,
+            data.status,
+        ],
+        account: address
+    })
+
+    return result
+}
+
 export async function queuesUp(address: Address, amount: number, projectId: string) {
     const hashApprove = await approve(address, amount);
     const confirmed = await getTransactionConfirmed(hashApprove);
@@ -50,25 +69,47 @@ export async function queuesUp(address: Address, amount: number, projectId: stri
     }
 
     return false
-
 }
 
-export async function createProject(address: Address, data: ProjectData) {
+export async function changeStatus(address: Address, projectId: string, status: number) {
     const result = await writeContract(config, {
         abi: ABI_CONTRIBUTE_CONTRACT,
         address: INVEST_CONTRACT_ADDRESS as Address,
-        functionName: 'createProject',
+        functionName: 'changeStatus',
         args: [
-            data.id,
-            BigInt(data.duration),
-            BigInt(data.reward) * PERCENTAGE_DECIMALS,
-            BigInt(data.minAmount) * DECIMALS,
-            BigInt(data.maxAmount) * DECIMALS,
-            data.status,
+            projectId,
+            status
         ],
         account: address
     })
 
     return result
+}
 
+export async function allocateFund(address: Address, projectId: string) {
+    const result = await writeContract(config, {
+        abi: ABI_CONTRIBUTE_CONTRACT,
+        address: INVEST_CONTRACT_ADDRESS as Address,
+        functionName: 'allocate',
+        args: [
+            projectId
+        ],
+        account: address
+    })
+
+    return result
+}
+
+export async function changeMinimumTokenAccepted(address: Address, amount: number) {
+    const result = await writeContract(config, {
+        abi: ABI_CONTRIBUTE_CONTRACT,
+        address: INVEST_CONTRACT_ADDRESS as Address,
+        functionName: 'changeMinimumTokenAccepted',
+        args: [
+            BigInt(amount) * DECIMALS
+        ],
+        account: address
+    })
+
+    return result
 }

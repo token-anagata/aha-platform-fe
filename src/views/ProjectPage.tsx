@@ -1,13 +1,15 @@
+import SpinIcon from "@/assets/svg/SpinIcon";
+import Allocate from "@/components/Box/Allocate";
 import Balance from "@/components/Box/Balance";
+import MinimumContribute from "@/components/Form/MinimumContribute";
 import Project from "@/components/Form/Project";
+import ProjectStatus from "@/components/Form/ProjectStatus";
 import Layout from "@/components/Layout/Main";
 import { getBscChainNetwork } from "@/configurations/chains";
 import { DEFAULT_ADDRESS } from "@/configurations/common";
 import { useProjectInvest } from "@/hooks/useProject";
-import { OpenParams } from "@/types/account";
 import { formattedMainBalance } from "@/utils/wagmi";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Address } from "viem";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
@@ -15,7 +17,6 @@ import { useAccount, useChainId, useSwitchChain } from "wagmi";
 const bscChain = getBscChainNetwork()
 
 const ProjectPage: React.FC = () => {
-    const { open } = useWeb3Modal();
     const { address, isConnected, status } = useAccount();
     const [refetch, setRefetch] = useState<boolean>(false)
     const [bnbBalance, setBnbBalance] = useState<number>(0)
@@ -25,20 +26,11 @@ const ProjectPage: React.FC = () => {
     const chainId = useChainId()
     const navigate = useNavigate()
 
-    const handleConnect = (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {
-        e.preventDefault();
-        if (address) {
-            open({ view: "Account" } as OpenParams);
-        } else {
-            open({ view: "Connect" } as OpenParams);
-        }
-    };
-
     useEffect(() => {
         (async () => {
             if (chainId !== bscChain.id) {
                 await switchChainAsync({ chainId: bscChain.id });
-            } 
+            }
         })()
     }, [status])
 
@@ -55,17 +47,44 @@ const ProjectPage: React.FC = () => {
         })()
     }, [isConnected, refetch])
 
+    if (dataProject == null || dataProject == undefined) {
+        return (
+            <div className="flex min-h-screen justify-center items-center place-self-center">
+                <SpinIcon addClassName="animate-spin w-32 h-32 text-aha-green-light" />
+            </div>
+        );
+    }
+
     return (
         <Layout type="default">
-            <div className="flex justify-center">
+            <div className="flex flex-col md:flex-row justify-center gap-4">
                 <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
                     <Balance page="project" title="Post on Smartcontract" bnb={bnbBalance} />
                     <Project
                         id={dataProject?.project_id as string}
                         address={address}
                         data={dataProject}
-                        handleConnect={handleConnect}
                         setRefetch={setRefetch}
+                    />
+                </section>
+                <section className="w-full md:w-2/4 md:space-y-5">
+                    <ProjectStatus
+                        id={dataProject?.project_id as string}
+                        address={address}
+                        data={dataProject}
+
+                    />
+                    <Allocate
+                        id={dataProject?.project_id as string}
+                        address={address}
+                        data={dataProject}
+
+                    />
+                    <MinimumContribute
+                        id={dataProject?.project_id as string}
+                        address={address}
+                        data={dataProject}
+
                     />
                 </section>
             </div>
