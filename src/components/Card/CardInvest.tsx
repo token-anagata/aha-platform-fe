@@ -53,7 +53,7 @@ const CardInvest: React.FC<CardInvestProps> = ({ data }) => {
                         <p className="font-normal text-gray-800 dark:text-gray-300">Raised</p>
                         <p className={classNames({
                             'text-aha-green-lighter': Number(data.total_conversion_value) > Number(data.target_investment),
-                            'text-red-600': Number(data.total_conversion_value) < Number(data.target_investment)
+                            'text-yellow-600 dark:text-yellow-500': Number(data.total_conversion_value) < Number(data.target_investment)
                         })}> $ {formatNumber(Number(data.total_conversion_value), 0, 2)}</p>
                         <p className="font-normal text-gray-800 dark:text-gray-300">from</p>
                         <p className="text-aha-green-light">$ {formatNumber(Number(data.target_investment), 0, 2)}</p>
@@ -62,12 +62,16 @@ const CardInvest: React.FC<CardInvestProps> = ({ data }) => {
 
                 <div className="flex w-full h-4 bg-gray-200 rounded-full overflow-hidden dark:bg-neutral-400" >
                     <div
-                        className="flex flex-col justify-center rounded-full overflow-hidden bg-aha-green-lighter text-xs text-white text-center whitespace-nowrap transition duration-500"
-                        style={{ width: `${Math.ceil(Number(data.total_conversion_value) / Number(data.target_investment) * 100)}%` }}
+                        className={classNames({
+                            'flex flex-col justify-center rounded-full overflow-hidden text-xs text-white text-center whitespace-nowrap transition duration-500': true,
+                            'bg-yellow-500': Number(data.total_conversion_value) < Number(data.target_investment),
+                            'bg-aha-green-lighter':  Number(data.total_conversion_value) < Number(data.target_investment),
+                        })}
+                        style={{ width: `${Math.ceil(Number(data.total_conversion_value) / Number(data.target_donation) * 100)}%` }}
                     >
                     </div>
                 </div>
-                <div className="flex">
+                <div className="flex justify-end">
                     <p className="text-base text-gray-600 dark:text-white"> {data.days_left} Days Left</p>
                 </div>
             </div>

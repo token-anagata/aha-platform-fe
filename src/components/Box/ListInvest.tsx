@@ -7,6 +7,9 @@ import { useListInvest } from "@/hooks/useInvest";
 import { Address } from "viem";
 import { Project } from "@/types/project";
 import { useCurrencies } from "@/hooks/useCurrencies";
+import classNames from "classnames";
+import QueueIcon from "@/assets/svg/QueueIcon";
+import ContributeIcon from "@/assets/svg/ContributeIcon";
 
 interface ListInvestProps {
     id: string;
@@ -20,16 +23,16 @@ const ListInvest: React.FC<ListInvestProps> = ({ id, address, data, refetch, set
     const { data: listInvest, refetch: refetchList, isLoading } = useListInvest(id as string, address as Address)
     const { data: dataCurrencies } = useCurrencies()
     const [usdRate, setUsdRate] = useState<number>(0)
- 
+
     useEffect(() => {
         refetchList()
         setRefetch(false)
     }, [refetch])
-    
+
     useEffect(() => {
-        if(dataCurrencies){
+        if (dataCurrencies) {
             const usd = dataCurrencies.tether.usd
-            
+
             setUsdRate(usd)
         }
     }, [dataCurrencies])
@@ -74,10 +77,16 @@ const ListInvest: React.FC<ListInvestProps> = ({ id, address, data, refetch, set
                     </div>
                     <div className="flex flex-col items-center md:items-end justify-end sm:text-right pl-4 sm:space-y-2">
                         <p className="text-gray-800 dark:text-gray-300 text-lg">{v.investment_date} - {data.end_date}</p>
-                        <p className="flex items-end justify-end text-aha-green-light dark:text-aha-green-lighter text-lg">
-                            {formatNumber((Number(v.investment_value) * (Number(data.apy_investor) / 100)  || 0), 0, 2)}
+                        <p className={classNames({
+                            'flex justify-end text-lg': true,
+                            'text-yellow-500 dark:text-yellow-400': v.status === 0,
+                            'text-aha-green-light dark:text-aha-green-lighter': v.status === 1
+                        })}>
+                            <span >{v.status === 0 ? 'In Queue' : 'Success'}</span>&nbsp;
+                            {v.status === 0 ? <QueueIcon addClassName="w-6 h-6" /> : <ContributeIcon addClassName="" />}
+                            {formatNumber((Number(v.investment_value) * (Number(data.apy_investor) / 100) || 0), 0, 2)}
                             &nbsp;USDT&nbsp;
-                            <UsdtIcon addClassName="w-6 h-6 m-auto" />
+                            <UsdtIcon addClassName="w-8 h-8" />
                         </p>
                     </div>
                 </div>

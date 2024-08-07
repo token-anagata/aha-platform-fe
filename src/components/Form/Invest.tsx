@@ -56,7 +56,7 @@ const Invest: React.FC<InvestProps> = ({ id, address, data, setRefetch }) => {
                 wallet_id: address as string,
                 investment_currency: 'usdt',
                 investment_value: invest,
-                status: 1,
+                status: 0,
             })
 
         }
