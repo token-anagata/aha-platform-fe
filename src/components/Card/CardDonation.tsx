@@ -59,14 +59,14 @@ const CardDonation: React.FC<CardDonationProps> = ({ data }) => {
                             'text-yellow-600 dark:text-yellow-500': Number(data.total_conversion_value) < Number(data.target_donation)
                         })}> $ {formatNumber(Number(data.total_conversion_value), 0, 2)}</p>
                         <p className="font-normal text-gray-800 dark:text-gray-300">from</p>
-                        <p className="text-aha-green-light">$ {formatNumber(Number(data.target_donation), 0, 2)}</p>
+                        <p className="text-aha-green-light dark:text-aha-green-lighter">$ {formatNumber(Number(data.target_donation), 0, 2)}</p>
                     </div>
                 </div>
 
-                <div className="flex w-full h-4 bg-gray-200 rounded-full overflow-hidden dark:bg-neutral-400" >
+                <div className="flex w-full h-4 bg-gray-200 rounded-sm overflow-hidden dark:bg-neutral-400" >
                     <div
                          className={classNames({
-                            'flex flex-col justify-center rounded-full overflow-hidden text-xs text-white text-center whitespace-nowrap transition duration-500': true,
+                            'flex flex-col justify-center rounded-sm overflow-hidden text-xs text-white text-center whitespace-nowrap transition duration-500': true,
                             'bg-yellow-400': Number(data.total_conversion_value) < Number(data.target_donation),
                             'bg-aha-green-lighter':  Number(data.total_conversion_value) < Number(data.target_donation),
                         })}

@@ -243,7 +243,7 @@ const Donation: React.FC<DonationProps> = ({ id, address, tokenPrice, setRefetch
                     <p className="uppercase">{chain.value}</p>&nbsp; {chain.icon}
                 </div>
                 <input
-                    className="appearance-none border py-4 pl-4 text-xl bg-gray-100 dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 placeholder:dark:text-gray-200 focus:placeholder-gray-600 transition rounded-sm w-full outline-none"
+                    className="appearance-none border py-4 pl-4 text-xl bg-gray-300 dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 placeholder:dark:text-gray-200 focus:placeholder-gray-600 transition rounded-sm w-full outline-none"
                     type="text"
                     value={donation}
                     placeholder="0"

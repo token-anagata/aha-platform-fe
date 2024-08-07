@@ -78,12 +78,12 @@ const InvestPage: React.FC = () => {
     return (
         <Layout type="default">
             <div className="flex flex-col sm:flex-row justify-between gap-4">
-                <section className="w-full md:w-2/4 px-4 py-2 md:space-y-5 bg-gray-100 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+                <section className="w-full md:w-2/4 px-4 py-2 md:space-y-5 bg-gray-100 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-40">
                     <CardInvest
                         data={dataProject}
                     />
                 </section>
-                <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+                <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 dark:bg-gray-50 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-40">
                     <BaseBalance page="invest" usdt={usdtBalance} aha={ahaBalance} />
                     <Invest
                         id={dataProject?.project_id as string}

@@ -102,14 +102,14 @@ const MinimumContribute: React.FC<ProjectProps> = ({ address }) => {
         e.preventDefault()
     };
     return (
-        <div className="flex flex-col px-4 sm:px-10 py-10 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+        <div className="flex flex-col px-4 sm:px-10 py-10 bg-gray-300 dark:bg-gray-50 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-40">
             <h2 className="font-bold text-2xl">Change Minimum AHA Token Accepted </h2>
             <div className="grid space-y-5">
 
                 <div className="col-span-full">
                     <div className="mt-2">
                         <input
-                            className="appearance-none border py-4 pl-4 text-xl bg-gray-100 dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 placeholder:dark:text-gray-200 focus:placeholder-gray-600 transition rounded-sm w-full outline-none"
+                            className="appearance-none border py-4 pl-4 text-xl bg-gray-300 dark:bg-gray-700 text-black dark:text-white placeholder:text-gray-500 placeholder:dark:text-gray-200 focus:placeholder-gray-600 transition rounded-sm w-full outline-none"
                             type="text"
                             placeholder="100"
                             name="minAmount"

@@ -1,4 +1,3 @@
-import BnbIcon from "@/assets/svg/BnbIcon";
 import classNames from "classnames";
 import ConnectButton from "../Buttons/ConnectButton";
 import { MouseEvent, useEffect, useState } from "react";
@@ -9,6 +8,9 @@ import { allocateFund } from "@/utils/wagmi/contribute/writeContract";
 import { useWaitForTransactionReceipt } from "wagmi";
 import { toast } from "react-toastify";
 import { getBscChainNetwork } from "@/configurations/chains";
+import { formatNumber } from "@/utils/number";
+import { REAL_DECIMALS } from "@/utils/wagmi";
+import UsdtIcon from "@/assets/svg/UsdtIcon";
 
 interface IcoBalanceProps {
     id: string;
@@ -38,7 +40,7 @@ const Allocate: React.FC<IcoBalanceProps> = ({ id, address, data }) => {
         (async () => {
             try{
                 const totalAmount = await getTotalProjectAmount(address as Address, id);
-                
+              
                 setTotalAmount(Number(totalAmount))
             }catch(e){
                 setTotalAmount(0)
@@ -67,7 +69,7 @@ const Allocate: React.FC<IcoBalanceProps> = ({ id, address, data }) => {
     };
 
     return (
-        <div className="flex flex-col gap-y-6 px-4 sm:px-10 py-10 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+        <div className="flex flex-col gap-y-6 px-4 sm:px-10 py-10 bg-gray-300 dark:bg-gray-50 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-40">
 
             <div className="flex flex-col justify-between p-2 gap-2">
                 <h2 className="font-bold text-2xl">Allocate fund </h2>
@@ -78,7 +80,7 @@ const Allocate: React.FC<IcoBalanceProps> = ({ id, address, data }) => {
                 <div className="grid grid-cols-2 border-b-2 border-gray-400 text-lg px-2">
                     <div>Total Amount</div>
                     <div className="flex justify-end text-right font-semibold">
-                        {totalAmount}&nbsp;<BnbIcon addClassName=" " />
+                        {formatNumber(totalAmount / 10**REAL_DECIMALS, 0, 6)}&nbsp;USDT&nbsp;<UsdtIcon addClassName=" " />
                     </div>
                 </div>
             </div>

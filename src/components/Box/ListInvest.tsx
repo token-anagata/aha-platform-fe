@@ -10,6 +10,7 @@ import { useCurrencies } from "@/hooks/useCurrencies";
 import classNames from "classnames";
 import QueueIcon from "@/assets/svg/QueueIcon";
 import ContributeIcon from "@/assets/svg/ContributeIcon";
+import { useDarkMode } from "@/context/DarkModeContext";
 
 interface ListInvestProps {
     id: string;
@@ -23,6 +24,7 @@ const ListInvest: React.FC<ListInvestProps> = ({ id, address, data, refetch, set
     const { data: listInvest, refetch: refetchList, isLoading } = useListInvest(id as string, address as Address)
     const { data: dataCurrencies } = useCurrencies()
     const [usdRate, setUsdRate] = useState<number>(0)
+    const { darkMode } = useDarkMode()
 
     useEffect(() => {
         refetchList()
@@ -78,15 +80,16 @@ const ListInvest: React.FC<ListInvestProps> = ({ id, address, data, refetch, set
                     <div className="flex flex-col items-center md:items-end justify-end sm:text-right pl-4 sm:space-y-2">
                         <p className="text-gray-800 dark:text-gray-300 text-lg">{v.investment_date} - {data.end_date}</p>
                         <p className={classNames({
-                            'flex justify-end text-lg': true,
+                            'flex items-center justify-end text-lg': true,
                             'text-yellow-500 dark:text-yellow-400': v.status === 0,
                             'text-aha-green-light dark:text-aha-green-lighter': v.status === 1
                         })}>
-                            <span >{v.status === 0 ? 'In Queue' : 'Success'}</span>&nbsp;
-                            {v.status === 0 ? <QueueIcon addClassName="w-6 h-6" /> : <ContributeIcon addClassName="" />}
-                            {formatNumber((Number(v.investment_value) * (Number(data.apy_investor) / 100) || 0), 0, 2)}
-                            &nbsp;USDT&nbsp;
-                            <UsdtIcon addClassName="" />
+                            {v.status === 0 ? 'In Queue' : 'Success'}
+                            &nbsp;
+                            {v.status === 0 ? <QueueIcon addClassName="w-6 h-6" /> : <ContributeIcon addClassName="w-6 h-6" darkMode={darkMode} />}
+                            {formatNumber((Number(v.investment_value) * (Number(data.apy_investor) / 100) || 0), 0, 2)}&nbsp;
+                            USDT&nbsp;<UsdtIcon addClassName="w-6 h-6" />
+
                         </p>
                     </div>
                 </div>

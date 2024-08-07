@@ -86,7 +86,7 @@ const ProjectStatus: React.FC<ProjectProps> = ({ id, address }) => {
     };
 
     return (
-        <div className="flex flex-col gap-y-6 px-4 sm:px-10 py-10 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+        <div className="flex flex-col gap-y-6 px-4 sm:px-10 py-10 bg-gray-300 dark:bg-gray-50 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-40">
             <h2 className="font-bold text-2xl">Change Status </h2>
             <div className="grid space-y-5">
 

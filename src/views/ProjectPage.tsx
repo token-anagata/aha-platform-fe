@@ -58,7 +58,7 @@ const ProjectPage: React.FC = () => {
     return (
         <Layout type="default">
             <div className="flex flex-col md:flex-row justify-center gap-4">
-                <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-30">
+                <section className="w-full md:w-2/4 px-4 sm:px-10 py-10 md:space-y-5 bg-gray-300 dark:bg-gray-50 shadow-xl rounded-sm bg-opacity-60 dark:bg-opacity-40">
                     <Balance page="project" title="Post on Smartcontract" bnb={bnbBalance} />
                     <Project
                         id={dataProject?.project_id as string}
