@@ -86,7 +86,7 @@ const ListInvest: React.FC<ListInvestProps> = ({ id, address, data, refetch, set
                             {v.status === 0 ? <QueueIcon addClassName="w-6 h-6" /> : <ContributeIcon addClassName="" />}
                             {formatNumber((Number(v.investment_value) * (Number(data.apy_investor) / 100) || 0), 0, 2)}
                             &nbsp;USDT&nbsp;
-                            <UsdtIcon addClassName="w-8 h-8" />
+                            <UsdtIcon addClassName="" />
                         </p>
                     </div>
                 </div>
