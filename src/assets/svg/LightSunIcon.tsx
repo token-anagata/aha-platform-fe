@@ -1,6 +1,6 @@
 import SVGEelement from "@/types/svg";
 
-function LightSunIcon({ addClassName } : SVGEelement) {
+const LightSunIcon : React.FC<SVGEelement> = ({ addClassName }) => {
     return (
         <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={addClassName}>
             <g clipPath="url(#a)" stroke="#e5e5e5" strokeWidth="1.5" strokeMiterlimit="10">
@@ -18,5 +18,3 @@ function LightSunIcon({ addClassName } : SVGEelement) {
 }
 
 export default LightSunIcon
-
-

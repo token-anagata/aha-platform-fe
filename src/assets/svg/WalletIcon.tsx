@@ -1,10 +1,7 @@
-
-
-
 import { useDarkMode } from "@/context/DarkModeContext";
 import SVGEelement from "@/types/svg"
 
-function WalletIcon({ addClassName }: SVGEelement) {
+const WalletIcon : React.FC<SVGEelement> = ({ addClassName }) => {
     const { darkMode } = useDarkMode();
 
     return (
@@ -29,5 +26,3 @@ function WalletIcon({ addClassName }: SVGEelement) {
 }
 
 export default WalletIcon
-
-

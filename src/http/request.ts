@@ -1,11 +1,11 @@
-import { WEBBASE_URL } from '@/configurations/common';
+import { API_URL, WEBBASE_URL } from '@/configurations/common';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-axios.defaults.baseURL = WEBBASE_URL;
+axios.defaults.baseURL = API_URL;
 
 axios.interceptors.request.use((config) => {
     const token = localStorage.getItem('_X_AUTH_')
-    console.log(config.url?.includes("http"))
+    
     if (token && !config.url?.includes("http")) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,7 +24,7 @@ axios.interceptors.response.use(
 
             case 401:
                 console.error('Unauthenticated');
-                //window.location.replace(WEBBASE_URL)
+                window.location.replace(WEBBASE_URL)
                 break;
 
             case 404:

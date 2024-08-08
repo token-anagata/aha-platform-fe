@@ -1,6 +1,5 @@
 import AhaIcon from "@/assets/svg/AhaIcon";
 import ArrowDownIcon from "@/assets/svg/ArrowDownIcon";
-import SpinIcon from "@/assets/svg/SpinIcon";
 import UsdtIcon from "@/assets/svg/UsdtIcon";
 import { RangePrice } from "@/types/token";
 import { formatInputNumber, formatNumber, formatToken } from "@/utils/number";
@@ -11,14 +10,14 @@ import classNames from "classnames";
 import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Address, Hash } from "viem";
-import { useWaitForTransactionReceipt } from "wagmi";
+import { useBalance, useWaitForTransactionReceipt } from "wagmi";
+import ConnectButton from "../Buttons/ConnectButton";
 
 interface IcoProps {
     tokenPrice: BigInt;
     rangePrice: RangePrice;
     address: string | undefined;
     setRefetch: Dispatch<SetStateAction<boolean>>;
-    handleConnect: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void,
 }
 
 type HashTransaction = {
@@ -26,11 +25,12 @@ type HashTransaction = {
     mode: 'approve' | 'buy' | undefined;
 }
 
-const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch, handleConnect }) => {
+const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch }) => {
     const [usdt, setUsdt] = useState<string>('')
     const [aha, setAha] = useState<string>('')
     const [formattedTokenPrice, setformattedTokenPrice] = useState<string>('0')
     const [loadingButton, setLoadingButton] = useState<boolean>(false)
+    const { data: balance } = useBalance({ address: address as Address })
     const [hashTransaction, setHashTransaction] = useState<HashTransaction>({ hash: undefined, mode: undefined })
     const { data: dataTransaction, isLoading: loadingTransaction, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
         hash: hashTransaction.hash,
@@ -38,8 +38,8 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch, 
 
     useEffect(() => {
         (async () => {
-            if (!isConfirmed) return 
-            
+            if (!isConfirmed) return
+
             if (hashTransaction.mode === 'buy') {
                 // update list 
                 setHashTransaction(prevState => ({
@@ -55,13 +55,13 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch, 
                 return
             }
 
-            
+
             try {
                 const topics = decodeLog(dataTransaction.logs)
                 const amountToBuy = Number(usdt)
                 // Ask to permitted for move their funds to contract address
                 const result = await buyTokens(address as Address, amountToBuy)
-                
+
                 console.log(topics)
                 if (result) {
                     // update mode 
@@ -89,13 +89,19 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch, 
 
         const amountToBuy = Number(usdt.replace(/,/g, ''))
         const min = formatToken(rangePrice.min)
-        const max = formatToken(rangePrice.max) 
-        
-        if(amountToBuy < min || amountToBuy > max){
+        const max = formatToken(rangePrice.max)
+
+        if (amountToBuy < min || amountToBuy > max) {
             toast.warning(`Amount is not in range token price. Minimum ${min} USDT & Maximum ${max} USDT `)
 
-            return 
-        }  
+            return
+        }
+
+        if (Number(balance?.value) < 10) {
+            toast.warning(`Your BNB is lower than 10 wei please top up your BNB because gas fee is required to pay for the computational effort needed to process the transaction`)
+
+            return
+        }
 
         try {
             // loading button
@@ -199,9 +205,9 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch, 
             </div>
 
             <div className="relative flex items-center">
-                <div className="flex-grow border-t border-gray-400"></div>
-                <span className="flex-shrink mx-4 text-gray-400"><ArrowDownIcon addClassName="" /></span>
-                <div className="flex-grow border-t border-gray-400"></div>
+                <div className="flex-grow border-t border-gray-400 dark:border-gray-50"></div>
+                <span className="flex-shrink mx-4 text-gray-400 dark:text-gray-50"><ArrowDownIcon addClassName="" /></span>
+                <div className="flex-grow border-t border-gray-400 dark:border-gray-50"></div>
             </div>
 
             <div className="relative">
@@ -219,27 +225,17 @@ const Ico: React.FC<IcoProps> = ({ address, tokenPrice, rangePrice, setRefetch, 
             </div>
 
             <div className="relative">
-                <button
+                <ConnectButton
                     className={classNames({
                         'btn w-full block px-2 py-4 gap-x-2 text-xl text-center rounded-r-sm': true,
                         //'bg-opacity-50 pointer-events-none': !saleActive,
                         'flex justify-center': loadingButton
                     })}
-                    disabled={loadingButton}
-                    onClick={address ? handleBuyToken : handleConnect}
-                >
-                    {
-                        loadingButton ? (
-                            <SpinIcon
-                                addClassName={classNames({
-                                    'w-8 h-8': true,
-                                    'animate-spin': loadingButton
-                                })}
-                            />
-                        )
-                            : (address ? "Buy Token" : "Connect")
-                    }
-                </button>
+                    address={address}
+                    buttonText="Buy Token"
+                    loadingButton={loadingButton}
+                    handleClick={handleBuyToken}
+                />
             </div>
 
             <div className="flex justify-center">

@@ -5,7 +5,7 @@ interface ResponseAuth {
     valid: boolean;
 }
 
-const fetchAuthData = async (): Promise<ResponseAuth> => {
+export const fetchAuthData = async (): Promise<ResponseAuth> => {
     const response = await request.post('/api/login/verifyToken', {});
     
     return response as ResponseAuth;

@@ -1,7 +1,6 @@
-
 import SVGEelement from "@/types/svg"
 
-function UsdtIcon({ addClassName }: SVGEelement) {
+const UsdtIcon : React.FC<SVGEelement> = ({ addClassName }) => {
     return (
 
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 339.43 295.27" width={30} height={30} className={addClassName}>
@@ -13,5 +12,3 @@ function UsdtIcon({ addClassName }: SVGEelement) {
 }
 
 export default UsdtIcon
-
-

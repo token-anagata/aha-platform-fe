@@ -6,12 +6,13 @@ import {
 import { getContractAddress } from '../contract';
 import { Address } from 'viem/accounts';
 import { Hash, Log, parseEventLogs } from 'viem';
-import { getChainNetwork } from '@/configurations/chains';
+import { getBscChainNetwork } from '@/configurations/chains';
 import { ABI_USDT_CONTRACT } from '@/abi/usdt';
 
 /* global BigInt */
 export const CURRENT_EVENT = process.env.REACT_APP_EVENTID
 export const DECIMALS = BigInt(1_000_000_000_000_000_000);
+export const PERCENTAGE_DECIMALS = BigInt(10_000_000_000_000_000);
 export const REAL_DECIMALS = 18
 export const SUCCESS_STATUS = "success"
 
@@ -38,8 +39,18 @@ export async function formattedBalance(address: Address, type: string) {
     return Number(balance?.formatted)
 }
 
+export async function formattedMainBalance(address: Address) {
+
+    const balance = await getBalance(config, {
+        address: address as Address
+    })
+
+    return Number(balance?.formatted)
+}
+
+
 export async function getTransactionConfirmed(hash: Hash) {
-    const chain = getChainNetwork()
+    const chain = getBscChainNetwork()
     const transaction = await waitForTransactionReceipt(config, {
         chainId: chain.id,
         hash: hash

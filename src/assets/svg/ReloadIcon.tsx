@@ -1,6 +1,6 @@
 import SVGEelement from "@/types/svg"
 
-function ReloadIcon({ addClassName }: SVGEelement) {
+const ReloadIcon : React.FC<SVGEelement> = ({ addClassName }) => {
     return (
         <svg fill="#fff" version="1.1" xmlns="http://www.w3.org/2000/svg" className={addClassName} viewBox="0 0 592.99 592.99">
             <g>
@@ -15,5 +15,3 @@ function ReloadIcon({ addClassName }: SVGEelement) {
 }
 
 export default ReloadIcon
-
-

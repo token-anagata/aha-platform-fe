@@ -62,12 +62,12 @@ const MainStake: React.FC<MainStakeProps> = ({ address, loadingList, setLoadingL
     } catch (e) {
       console.log("unstake", e);
       setLoadingButton(false);
-      toast.error("There was an error during unstake, try again in moment");
+      toast.error("There is no cycle number that can be claimed because it has not passed the stake period");
     }
   };
 
   return (
-    <section className="col-span-2 px-2 py-6 space-y-8 bg-gray-300 shadow-xl sm:col-span-1 sm:px-4 rounded-sm bg-opacity-60 dark:bg-opacity-30">
+    <section className="col-span-2 px-2 py-6 space-y-8 bg-gray-300 dark:bg-gray-50 shadow-xl sm:col-span-1 sm:px-4 rounded-sm bg-opacity-60 dark:bg-opacity-40">
       <div className="space-y-2 font-semibold text-justify">
         <div className="grid grid-cols-2">
           <div className="col-span-1">Amount Staked:</div>

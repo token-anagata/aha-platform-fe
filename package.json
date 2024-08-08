@@ -10,7 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^2.0.4",
+    "@solana/wallet-adapter-backpack": "^0.1.14",
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/wallet-adapter-react-ui": "^0.9.35",
+    "@solana/wallet-adapter-wallets": "^0.19.32",
+    "@solana/web3.js": "^1.95.1",
     "@tanstack/react-query": "^5.36.0",
+    "@web3modal/solana": "^5.0.7",
     "@web3modal/wagmi": "^4.2.0",
     "axios": "^1.7.1",
     "classnames": "^2.5.1",
@@ -20,7 +28,8 @@
     "react-toastify": "^10.0.5",
     "viem": "^2.10.5",
     "vite-tsconfig-paths": "^4.3.2",
-    "wagmi": "^2.8.7"
+    "wagmi": "^2.8.7",
+    "xrpl": "^4.0.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",

@@ -27,17 +27,17 @@ const UnstakeCycle: React.FC<UnstakeCycleProps> = ({ address }) => {
 
       if (result) {
         setLoadingButton(false);
-        toast.success('Unstake has been successful');
+        toast.success('Unstake has been successful. This process will take approximately 3 x 24 hours');
       }
     } catch (e) {
       console.log('unstake', e);
       setLoadingButton(false);
-      toast.error("There was an error during unstake, try again in a moment");
+      toast.error("This number cycle cannot be claimed yet because it has not passed the stake period");
     }
   };
 
   return (
-    <section className="col-span-2 px-2 py-6 space-y-8 bg-gray-300 shadow-xl sm:px-4 rounded-sm bg-opacity-60 dark:bg-opacity-30">
+    <section className="col-span-2 px-2 py-6 space-y-8 bg-gray-300 dark:bg-gray-50 shadow-xl sm:px-4 rounded-sm bg-opacity-60 dark:bg-opacity-40">
       <div className="flex flex-col items-center sm:flex-row justify-evenly">
         <div className="font-medium">
           <h6 className="font-semibold"> Forgot to unstake from a previous cycle? We got you! </h6>
